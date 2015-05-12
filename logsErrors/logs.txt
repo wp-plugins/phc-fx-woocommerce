@@ -1,0 +1,19 @@
+addNewOrder5 2015/05/11 15:32:53:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:32:59:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:34:33:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:35:21:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:36:59:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:37:45:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:38:25:  Existem campos obrigatórios por preencher.
+addNewOrder5 2015/05/11 15:40:38:  Existem campos obrigatórios por preencher.
+setCommunicationFx 2015/05/11 16:52:29:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 16:55:31:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 16:55:51:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 16:56:52:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 16:57:34:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 17:42:48:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 17:42:53:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 17:43:00:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 17:43:10:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 17:43:18:  O nome do utilizador ou a palavra-passe estão errados.
+setCommunicationFx 2015/05/11 17:49:51:  Erro na execução de código interno
