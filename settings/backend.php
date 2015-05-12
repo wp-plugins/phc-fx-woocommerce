@@ -291,7 +291,7 @@
                                               );
                         foreach ($fieldsStatus as $key => $value){
                           $selected_dropdown = '';
-                          if($settings['backend']['statusOfOrder'] == $key){
+                          if($settings['backend']['productPriceColumn'] == $key){
                             $selected_dropdown = 'selected';
                           } ?>
                             <option id="<?php echo $key ?>" <?php echo $selected_dropdown ?> value="<?php echo $key ?>"><?php echo $value ?></option>
