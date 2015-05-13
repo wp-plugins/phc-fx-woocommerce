@@ -6,7 +6,7 @@ Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv2 or later
 
-#### Sync your online shop with your PHC FX accounting software. Integrate your WooCommerce Orders, Customers, Products and PHC FX stocks.
+Sync your online shop with your PHC FX accounting software. Integrate your WooCommerce Orders, Customers, Products and PHC FX stocks.
 
 == Description ==
 
@@ -19,7 +19,7 @@ WooCommerce Integration for PHC FX is an easy-to-use integration that creates In
 This integration requires a license purchase from PHC FX software (www.phcfx.com) and the WooCommerce plugin installed on your Wordpress site.
 
 
-What does WooCommerce for PHC FX do for you?
+#### What does WooCommerce for PHC FX do for you?
 
 - Automaticly create new clients in PHC FX accounting software 
 - Generate orders and invoices based on what the client orders in the website
