@@ -4,7 +4,7 @@ class PhcFxWoocommerce {
   public $params;
   public $query;
   public $fieldStatus;
-  public $extraurl = "";
+  public $extraurl = "/PHCWS";
   //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
@@ -98,8 +98,8 @@ class PhcFxWoocommerce {
   public function init_plugin() {
     $plugins = get_plugins();
 
-    define('PLUGIN_NAME',    $plugins[PHCFXWOOCOMMERCE_PLUGIN]['Name']);
-    define('PLUGIN_VERSION', $plugins[PHCFXWOOCOMMERCE_PLUGIN]['Version']);
+    define('PLUGIN_NAME_WOOCOMMERCE',    $plugins[PHCFXWOOCOMMERCE_PLUGIN]['Name']);
+    define('PLUGIN_VERSION_WOOCOMMERCE', $plugins[PHCFXWOOCOMMERCE_PLUGIN]['Version']);
   }
 
   public function register_settings() {
@@ -146,7 +146,7 @@ class PhcFxWoocommerce {
 
   //Access to page of Settings in menu Plugin
   public function load_settings() {
-    add_options_page(sprintf('%s Settings', PLUGIN_NAME), PLUGIN_NAME, 'manage_options', PHCFXWOOCOMMERCE_PLUGIN_NAME, array($this, 'render_settings'));
+    add_options_page(sprintf('%s Settings', PLUGIN_NAME_WOOCOMMERCE), PLUGIN_NAME_WOOCOMMERCE, 'manage_options', PHCFXWOOCOMMERCE_PLUGIN_NAME, array($this, 'render_settings'));
   }
 
   //Load links of pages in menu Plugins (Settings, Deactivate and Edit)
@@ -169,7 +169,7 @@ class PhcFxWoocommerce {
     // output notices in admin panel
     ?>
     <div class="error">
-      <h4><?php echo PLUGIN_NAME ?></h4>
+      <h4><?php echo PLUGIN_NAME_WOOCOMMERCE ?></h4>
       <p>The required settings are not yet configured!</p>
       <blockquote>
       <?php foreach ($notices as $entry => $message): ?>
@@ -186,7 +186,7 @@ class PhcFxWoocommerce {
   public function messagesError($message){
     ?>
     <div class="error">
-      <h4><?php echo PLUGIN_NAME ?></h4>
+      <h4><?php echo PLUGIN_NAME_WOOCOMMERCE ?></h4>
       <p>Failed to send data to backend! Please check your settings or connection!</p>
       <p><strong>Error <?php echo $message ?></strong></p>
     </div>
@@ -197,7 +197,7 @@ class PhcFxWoocommerce {
   public function messagesInformation($message){
     ?>
     <div class="error">
-      <h4><?php echo PLUGIN_NAME ?></h4>
+      <h4><?php echo PLUGIN_NAME_WOOCOMMERCE ?></h4>
       <p><strong><?php echo $message ?></strong></p>
     </div>
     <?php
@@ -274,6 +274,8 @@ class PhcFxWoocommerce {
   		case 'newTypeOfOrder':
   			$this->newTypeOfOrder($nameTypeOfOrder, $manageStock, $warehouse);
   			break;
+      case 'updateTypeOfOrder':
+        $this->updateTypeOfOrders();
   		default:
   			break;
   	}
@@ -1006,6 +1008,84 @@ class PhcFxWoocommerce {
     curl_close ( $ch );
   }
 
+  public function updateTypeOfOrders(){
+    $settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
+    //Obtain configuration to make login
+    $this->paramsLogin();
+    //initial request with login data
+    $ch = curl_init();
+    //URL to save cookie "ASP.NET_SessionId"
+    curl_setopt($ch, CURLOPT_URL, $this->url);
+    curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    //Parameters passed to POST
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, '');  //could be empty, but cause problems on some hosts
+    curl_setopt($ch, CURLOPT_COOKIEFILE, '');  //could be empty, but cause problems on some hosts
+    $response = curl_exec($ch);
+    // send response as JSON
+    $response = json_decode($response, true); 
+
+    if (curl_error($ch)) {
+      $this->writeFileLog('saveFieldOrderStatus', $ch);
+    } else if(empty($response)){
+      $this->writeFileLog('saveFieldOrderStatus', 'EMPTY RESPONSE');
+    } else if(isset($response['messages'][0]['messageCodeLocale'])){
+      $this->writeFileLog('saveFieldOrderStatus', $response['messages'][0]['messageCodeLocale']);
+    } else {
+      //Obtain type orders
+      $this->paramsQuery('TsWS', 'inactivo', 0);
+
+      curl_setopt($ch, CURLOPT_URL, $this->url);
+      curl_setopt($ch, CURLOPT_POST, false);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+      
+      $response = curl_exec($ch);
+      // send response as JSON
+      $response = json_decode($response, true);
+
+      if (curl_error($ch)) {
+        $this->writeFileLog('setCommunicationFx3', $ch);
+      } else if(empty($response)){
+        $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+        $this->messagesError("Can't connect to webservice!! There's an empty response");
+      } else if(isset($response['messages'][0]['messageCodeLocale'])){
+        $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
+        $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+      } else {
+
+        $i = 0;
+        $count = count($response['result']);
+        $typeInvoice = array(); 
+        //Create options of dropdownlist internal documents
+        while ($i < $count) {
+          $selected_dropdown = '';
+          foreach ($response['result'][$i] as $key => $value){
+            if($key == "ndos"){
+              $typeInvoice[$i]["ndos"] = $value;
+              if($settings['backend']['typeOfOrder'] == $value){
+                $selected_dropdown = 'selected';
+              }
+            } else if ($key == "nmdos"){
+              $typeInvoice[$i]["nmdos"] = $value;     
+            }
+          }
+          echo "<option id=" . $typeInvoice[$i]["nmdos"] . " value=" . $typeInvoice[$i]["ndos"] . " " . $selected_dropdown . ">" .  $typeInvoice[$i]["nmdos"] ."</option><br>"; 
+          ++$i;
+        }
+      }
+    }
+    //Logout
+    $this->paramsLogout();
+    //session_destroy();
+    curl_setopt($ch, CURLOPT_URL, $this->url);
+    curl_setopt($ch, CURLOPT_POST, false);
+    $response = curl_exec($ch);
+  }
+
   //Obtain value of field to PHC FX
   public function statusOfOrder($selectItems){
   	$settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
@@ -1052,7 +1132,7 @@ class PhcFxWoocommerce {
 	    } else if(isset($response['messages'][0]['messageCodeLocale'])){
 	        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
 	    } else {
-	    	echo json_encode($response['result'][0][$selectItems]);
+	    	echo $response['result'][0][$selectItems];
 	    }
     }
     //Logout
@@ -1118,8 +1198,9 @@ class PhcFxWoocommerce {
       } else {
 
         $sanitizeStatusOfOrder = sanitize_text_field( $_POST['phcfx-woocommerce']['backend']['statusOfOrder'] );
+        $sanitizeSaveStatusOfOrder = sanitize_text_field( $_POST['phcfx-woocommerce']['backend']['saveStatusOrder'] );
 
-        $response['result'][0][$sanitizeStatusOfOrder] = $sanitizeStatusOfOrder;
+        $response['result'][0][$sanitizeStatusOfOrder] = $sanitizeSaveStatusOfOrder;
         //Update operation
         $response['result'][0]['Operation'] = 2;
 
@@ -1237,7 +1318,7 @@ class PhcFxWoocommerce {
           //Verify if client already exists in bd
           $billing_email_ = sanitize_text_field( $_REQUEST['_billing_email'] );
           $billing_email = sanitize_text_field( $_REQUEST['billing_email'] );
-          $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+          $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
           if($billing_email_ == '' && $billing_email != ''){
             $this->paramsQuery('ClWS', 'email', $billing_email);
@@ -1585,31 +1666,12 @@ class PhcFxWoocommerce {
                             $this->writeFileLog('addNewOrder7', $response['messages'][0]['messageCodeLocale']);
                             //$this->sendEmail(utf8_decode("It is not possible to create lines of Bo!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your lines of internal document in PHC FX manually</b>"));
                           } else {
-                            
+                             
                             //Obtain VO with updated Bi and Bo
                             if (is_array($_SESSION['listOfQuantity'])){
                               foreach ($_SESSION['listOfQuantity'] as $key => $value){
                                 if($response['result'][0]['bis'][$key]['qtt'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'qtt', $value);
-
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch); 
-                                  // send response as JSON
-                                  $response = json_decode($response, true);         
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder8', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder8', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!! There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder8', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  } 
+                                  $response['result'][0]['bis'][$key]['qtt'] = $value;
                                 }           
                               }
                             }
@@ -1617,218 +1679,37 @@ class PhcFxWoocommerce {
                             if (is_array($_SESSION['listOfValueItem'])){
                               foreach ($_SESSION['listOfValueItem'] as $key => $value){
                                 if($response['result'][0]['bis'][$key]['ettdeb'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'ettdeb', $value);
-
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
+                                  $response['result'][0]['bis'][$key]['ettdeb'] = $value;
                                 }            
                               }
                             }
 
                             //Eliminate comercial discount
                             if (is_array($_SESSION['listOfSku'])){
-                              foreach ($_SESSION['listOfSku'] as $key => $value){
+                              foreach ($_SESSION['listOfSku'] as $key => $value){                            
                                 //Eliminate discount in field "desconto"
-                                if($response['result'][0]['bis'][$key]['desconto'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desconto', 0);
-
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.1', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.1', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.1', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }
+                                $response['result'][0]['bis'][$key]['desconto'] = 0;
+                                 
                                 //Eliminate discount in field "desconto"
-                                if($response['result'][0]['bis'][$key]['desc2'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc2', 0);
+                                $response['result'][0]['bis'][$key]['desc2'] = 0;
 
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.2', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.2', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.2', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }               
                                 //Eliminate discount in field "desc2"
-                                if($response['result'][0]['bis'][$key]['desc2'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc2', 0);
+                                $response['result'][0]['bis'][$key]['desc2'] = 0;
 
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.3', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.3', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.3', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }               
                                 //Eliminate discount in field "desc3"
-                                if($response['result'][0]['bis'][$key]['desc3'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc3', 0);
+                                $response['result'][0]['bis'][$key]['desc3'] = 0;
 
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.4', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.4', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.4', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }               
                                 //Eliminate discount in field "desc4"
-                                if($response['result'][0]['bis'][$key]['desc4'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc4', 0);
+                                $response['result'][0]['bis'][$key]['desc4'] = 0;
 
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.5', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.5', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.5', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }               
                                 //Eliminate discount in field "desc5"
-                                if($response['result'][0]['bis'][$key]['desc5'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc5', 0);
+                                $response['result'][0]['bis'][$key]['desc5'] = 0;
 
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.6', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.6', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.6', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }
                                 //Eliminate discount in field "desc6"
-                                if($response['result'][0]['bis'][$key]['desc6'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc6', 0);
-
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.7', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.7', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.7', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }  
+                                $response['result'][0]['bis'][$key]['desc6'] = 0;
                                                                 
                                 //Eliminate discount in field "desc6"
-                                if($response['result'][0]['bis'][$key]['desc6'] != $value){
-                                  $this->paramsActBi($response['result'][0]['bostamp'], $response['result'][0]['bis'][$key]['bistamp'], 'desc6', 0);
-
-                                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                                  curl_setopt($ch, CURLOPT_POST, false);
-                                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                                  $response = curl_exec($ch);
-                                  // send response as JSON
-                                  $response = json_decode($response, true); 
-
-                                  if (curl_error($ch)) {
-                                    $this->writeFileLog('addNewOrder9.7', $ch);
-                                  } else if(empty($response)){
-                                    $this->writeFileLog('addNewOrder9.7', 'EMPTY RESPONSE');
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
-                                    break;
-                                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                    $this->writeFileLog('addNewOrder9.7', $response['messages'][0]['messageCodeLocale']);
-                                    //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
-                                    break;
-                                  }     
-                                }               
+                                $response['result'][0]['bis'][$key]['desc6'] = 0;
                               }
                             }
 
@@ -1842,12 +1723,12 @@ class PhcFxWoocommerce {
                               //Update
                               $response['result'][0]['Operation'] = 1;
 
-        					  //Put the same number of order in PHC FX
+        					            //Put the same number of order in PHC FX
                               global $wpdb;
                               $table_name = $wpdb->prefix."postmeta";
                               //Obtain next post_id of order in MySQL
-                              $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
-                              $docid = $wpdb->get_row($wpdb->prepare($query, $table_name));
+                              $query = "SELECT MAX(post_id) as nextPostId FROM %s";
+                              $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
                               $response['result'][0]['obrano'] = $docid->nextPostId;
 
                               //Save internal document
@@ -1875,8 +1756,8 @@ class PhcFxWoocommerce {
 
                                 $table_name = $wpdb->prefix."postmeta";
                                 //Obtain next post_id of order in MySQL
-                                $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
-                                $docid = $wpdb->get_row($wpdb->prepare($query, $table_name));
+                                $query = "SELECT MAX(post_id) as nextPostId FROM %s";
+                                $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
 
                                 //add to table postmeta a key of order and stamp of internal document
                                 add_post_meta($docid->nextPostId, '_docid', $response['bostamp']);
@@ -2026,7 +1907,7 @@ class PhcFxWoocommerce {
                             $table_name = $wpdb->prefix."postmeta";
                             //Obtain next post_id of order in MySQL
                             $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
-                            $docid = $wpdb->get_row($wpdb->prepare($query, $table_name));
+                            $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
 
                             //add to table postmeta a key of order and stamp of internal document
                             add_post_meta($docid->nextPostId, '_docid', $response['bostamp']);
@@ -2084,7 +1965,7 @@ class PhcFxWoocommerce {
       //$this->sendEmail(utf8_decode("It is not possible to make login!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/><b>Please insert your client and order in PHC FX manually</b>"));
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
       $this->writeFileLog('cancelOrder', $response['messages'][0]['messageCodeLocale']);
-      $this->sendEmail("Wrong Login!<br/><br/><b>Please check your settings and insert your client and order manually</b>");
+      //$this->sendEmail("Wrong Login!<br/><br/><b>Please check your settings and insert your client and order manually</b>");
     } else {
       //Obtain type invoices
       $this->paramsQuery('E1ws', 'estab', 0);
@@ -2201,7 +2082,7 @@ class PhcFxWoocommerce {
       //$this->sendEmail(utf8_decode("It is not possible to make login!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/><b>Please insert your client and order in PHC FX manually</b>"));
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
       $this->writeFileLog('completedOrder', $response['messages'][0]['messageCodeLocale']);
-      $this->sendEmail("Wrong Login!<br/><br/><b>Please check your settings and insert your client and order manually</b>");
+      //$this->sendEmail("Wrong Login!<br/><br/><b>Please check your settings and insert your client and order manually</b>");
     } else {
       //Obtain type invoices
       $this->paramsQuery('E1ws', 'estab', 0);
@@ -2232,14 +2113,16 @@ class PhcFxWoocommerce {
             $valueItem = $docid['_docid'][0];
 
             if(empty($valueItem)){
-              $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+              $order_received = get_option('woocommerce_checkout_order_received_endpoint');
               //Obtain stamp of internal document based in order
+              if($order_received == ''){
+                 $order_received = sanitize_text_field( $_REQUEST['post_ID'] );
+              }
               $docid = get_post_meta($order_received);
 
-              $filterItem = "bostamp";
               $valueItem = $docid['_docid'][0];
             }
-            
+
             //Verify if exists in bd
             $this->paramsQuery('BoWS', $filterItem, $valueItem);
 
@@ -2320,7 +2203,7 @@ class PhcFxWoocommerce {
 
     //See if type of order is configured
     if(empty($settings['backend']['typeOfInvoice']) || $settings['backend']['typeOfInvoice'] == 0){
-      $this->sendEmail("It is not selected any type of invoice!<br/><br/><b>Please insert FT document and their items in PHC FX manually</b>");
+      //$this->sendEmail("It is not selected any type of invoice!<br/><br/><b>Please insert FT document and their items in PHC FX manually</b>");
     } else {      
 
       //Obtain new instance of FT based in Bo(bostamp)
@@ -2394,7 +2277,7 @@ class PhcFxWoocommerce {
               //Manage stock
               if($settings['backend']['manageStock'] == 'on'){
                 $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
-                $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+                $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
                 if(empty($order_received)){
                   $order = new WC_Order( $post_ID );
@@ -2540,7 +2423,7 @@ class PhcFxWoocommerce {
             //Manage stock
             if($settings['backend']['manageStock'] == 'on'){
               $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
-              $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+              $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
               if(empty($order_received)){
                 $order = new WC_Order( $post_ID );
@@ -2603,11 +2486,11 @@ class PhcFxWoocommerce {
 
     //See if type of order is configured
     if(empty($settings['backend']['typeOfInvoice']) || $settings['backend']['typeOfInvoice'] == 0){
-      $this->sendEmail("It is not selected any type of invoice!! <b>Please insert FT document and their items in PHC FX manually</b>");
+      //$this->sendEmail("It is not selected any type of invoice!! <b>Please insert FT document and their items in PHC FX manually</b>");
     } else {   
       $billing_email_ = sanitize_text_field( $_REQUEST['_billing_email'] );
       $billing_email = sanitize_text_field( $_REQUEST['billing_email'] );
-      $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+      $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
       if($billing_email_ == '' && $billing_email != ''){
         $this->paramsQuery('ClWS', 'email', $billing_email);
@@ -2665,7 +2548,7 @@ class PhcFxWoocommerce {
           $this->writeFileLog('addSimpleFT', $response['messages'][0]['messageCodeLocale']);
           //$this->sendEmail(utf8_decode("Error obtaining header of FT!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your FT document in PHC FX manually</b>"));
         } else {
-          $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+          $order_received = get_option('woocommerce_checkout_order_received_endpoint');
           //FT from Frontend
           if (!empty($order_received)){
             //Obtain id of order and products
@@ -2855,7 +2738,7 @@ class PhcFxWoocommerce {
                     //Manage stock
                     if($settings['backend']['manageStock'] == 'on'){
                       $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
-                      $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+                      $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
                       if(empty($order_received)){
                         $order = new WC_Order( $post_ID );
@@ -2998,7 +2881,7 @@ class PhcFxWoocommerce {
                   //Manage stock
                   if($settings['backend']['manageStock'] == 'on'){
                     $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
-                    $order_received = sanitize_text_field( $_REQUEST['order-received'] );
+                    $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
                     if(empty($order_received)){
                       $order = new WC_Order( $post_ID );
@@ -3095,31 +2978,16 @@ class PhcFxWoocommerce {
       update_post_meta( $new_post_id, '_stock', $stockUnitsProduct);
     }  
 
-    $img_file = str_replace(" ", "%20", $thumb_url);
-    //obtain content of image
-    $img_file = file_get_contents($img_file);
-
-    $im = imagecreatetruecolor(120, 20);
-    $text_color = imagecolorallocate($im, 233, 14, 91);
-    imagestring($im, 1, 5, 5,  '', $text_color);
-
-    // Save the image as 'simpletext.jpg'
-    imagejpeg($im, realpath(dirname(__FILE__)).'/tmp.jpg');
-    //path to local image
-    $file_loc = realpath(dirname(__FILE__)).'/tmp.jpg';
-
-    //create local image
-    $file_handler = fopen($file_loc,'w');
-    if(fwrite($file_handler,$img_file)==false){}
-    //stop to write image
-    fclose($file_handler);
-
-    // Set variables for storage
-    // fix file name for query strings
-    preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $file_loc, $matches);
+    $thumb_url = str_replace(" ", "%20", $thumb_url);
+ 
+    $tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
+    $img = file_get_contents($thumb_url);
+    file_put_contents($tmp, $img);
+    
+    preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
     $file_array['name'] = basename($matches[0]);
-    $file_array['tmp_name'] = $file_loc;
-
+    $file_array['tmp_name'] = $tmp;
+    
     // If error storing temporarily, unlink
     if ( is_wp_error( $tmp ) ) {
       @unlink($file_array['tmp_name']);
@@ -3128,6 +2996,7 @@ class PhcFxWoocommerce {
 
     //use media_handle_sideload to upload img:
     $thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
+
     // If error storing permanently, unlink
     if ( is_wp_error($thumbid) ) {
       @unlink($file_array['tmp_name']);
@@ -3137,7 +3006,7 @@ class PhcFxWoocommerce {
 
     update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);
 
-    unlink($file_loc);
+    //unlink($file_loc);
   }
 
 	public function listProducts(){
@@ -3406,7 +3275,8 @@ class PhcFxWoocommerce {
 				                                                                "&oritable=".$response['result'][$i]['imagem']['oriTable'].
 				                                                                "&uniqueid=".$response['result'][$i]['imagem']['uniqueid'].
 				                                                                "&filename=".$response['result'][$i]['imagem']['imageName'].
-				                                                                "&iflstamp=".$response['result'][$i]['imagem']['iflstamp'];
+				                                                                "&iflstamp=".$response['result'][$i]['imagem']['iflstamp'].
+                                                                        "&imageExtension=.jpg";
 				              	//Add Product
 				              	$this->addProduct($response['result'][$i]['design'], 
 				                         $response['result'][$i]['design'], 

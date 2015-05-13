@@ -170,7 +170,7 @@
                         <td>
                           <select id="<?php echo $id ?>" name="<?php echo $name ?>"> 
                           <?php if(!empty($_SESSION[$id])){ ?>
-                            <option value="0">Default Warehouse</option>
+                            <option value="1">Default Warehouse</option>
                           <?php } 
                           echo $_SESSION[$id]; ?>
                         </td>
@@ -309,7 +309,7 @@
                 <td>
                   <select id="<?php echo $id ?>" name="<?php echo $name ?>"> 
                   <?php if(!empty($_SESSION[$id])){ ?>
-                    <option value="0">All Warehouses</option>
+                    <option value="-1">All Warehouses</option>
                   <?php } 
                   echo $_SESSION[$id]; ?>
                 </td>

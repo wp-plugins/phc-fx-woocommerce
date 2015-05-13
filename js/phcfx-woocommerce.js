@@ -261,7 +261,7 @@ jQuery(document).ready(function() {
 	 //Save selected products in online shop
   jQuery('#addNewTypeOfOrder').click(function (event) {
     // stop normal form submission handler
-    //event.preventDefault();
+    event.preventDefault();
 
     //save products in MySQL
     jQuery.post(url, {
@@ -277,6 +277,14 @@ jQuery(document).ready(function() {
 		} else {
 			jQuery('#addNewTypeOrderMessage').html('A new type of Order was added in PHC FX');
 		}
+		jQuery('#typeOfOrder').html('');
+		jQuery.post(url, {
+	  		action: 'woocommerce_fx',
+	  		method: 'updateTypeOfOrder'
+	  	})
+	  	.done(function (data) {
+	  		jQuery('#typeOfOrder').html(data);
+    	})
     })
  });
 

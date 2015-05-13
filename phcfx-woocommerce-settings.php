@@ -10,7 +10,7 @@
 
   <!-- plugin's header and description -->
   <div style="width: 70%" class="alignleft">
-    <h2><?php echo PLUGIN_NAME ?> Settings</h2>
+    <h2><?php echo PLUGIN_NAME_WOOCOMMERCE ?> Settings</h2>
     <div id="descriptionPlugin" style="width: 100%"></div>
     
     <a href="http://pt.phcfx.com//" target="_blank" title="PHC FX" class="alignleft" style="margin-right: 20px;">
@@ -18,7 +18,7 @@
     </a>
 
     <h4>Eliminate your repetitive tasks!</h4>
-    <p class="description"><strong><?php echo PLUGIN_NAME ?></strong> is an easy-to-use integration that creates Invoices, Orders, Customers in your PHC FX accounting system. 
+    <p class="description"><strong><?php echo PLUGIN_NAME_WOOCOMMERCE ?></strong> is an easy-to-use integration that creates Invoices, Orders, Customers in your PHC FX accounting system. 
     You can also integrate the products and stocks in the WooCommerce solution and automatically send the invoices to your customers by mail.</p>
     <p>Don't forget to <strong>save your settings</strong> when all done!</p>
     <div class="clear"></div>
