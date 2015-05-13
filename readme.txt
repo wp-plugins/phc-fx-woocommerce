@@ -1,12 +1,12 @@
-=== PHC FX Plugin Woocommerce ===
+=== WooCommerce Plugin for PHC FX ===
 Contributors: phcwordpress
 Tags: phc, phcfx, fx, invoices, client, internal document, products, plugin, business
 Requires at least: 4.1.1
-Tested up to: 4.1.1
+Tested up to: 4.2.2
 Stable tag: trunk
 License: GPLv2 or later
 
-Sync your online shop with your PHC FX accounting software. Integrate your WooCommerce Orders, Customers, Products and PHC FX stocks.
+#### Sync your online shop with your PHC FX accounting software. Integrate your WooCommerce Orders, Customers, Products and PHC FX stocks.
 
 == Description ==
 
