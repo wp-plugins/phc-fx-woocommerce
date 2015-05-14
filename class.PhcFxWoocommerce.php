@@ -931,7 +931,7 @@ class PhcFxWoocommerce {
           $warehousesArray = array_unique($warehousesArray);
           foreach ($warehousesArray as $value) {
             $selected_dropdown = '';
-            if($settings['backend']['warehouse'] == $value){
+            if($settings['backend']['warehouseOrder'] == $value){
               $selected_dropdown = 'selected';
             }            
             $_SESSION['warehouseOrder'] .= "<option id=" . $value . " value=" . $value . " " . $selected_dropdown . ">" .  $value ."</option><br>"; 
@@ -3134,6 +3134,7 @@ class PhcFxWoocommerce {
 			    	}
 			    	++$i;
 			  	}
+          
 
 				// build our web service full URL
 				$this->paramsQuery3('StWS', $refArray);
