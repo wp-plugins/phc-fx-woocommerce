@@ -1355,7 +1355,7 @@ class PhcFxWoocommerce {
           } else {  
             unset($_SESSION['listOfSku']);
             unset($_SESSION['listOfQuantity']);
-            unset($_SESSION['listOfValueItem']);
+            unset($_SESSION['listOfValueItem']);            
 
             if (is_array(WC()->cart->cart_contents)){
               $i = 0;
@@ -1371,7 +1371,12 @@ class PhcFxWoocommerce {
                 //Obtain info about products in cart
                 $productData = WC()->cart->cart_contents[$productsOrder[$i]];
                 //obtain reference items in cart
-                $productReference = wc_get_product( $productData['product_id'] );
+                if($productData['variation_id']!=''){
+                  $productReference = wc_get_product( $productData['variation_id'] );
+                } else {
+                  $productReference = wc_get_product( $productData['product_id'] );
+                }
+
                 $sku[$i] = $productReference->get_sku();
                 //Obtain quantity of the product in cart
                 $quantity[$i] = $productData['quantity'];
@@ -1392,7 +1397,11 @@ class PhcFxWoocommerce {
               $i = 0;
               
               foreach($order->get_items() as $key => $value){
-                $product = new WC_Product($value['product_id']);
+                if($value['variation_id'] != ''){
+                   $product = new WC_Product($value['variation_id']);
+                } else {
+                   $product = new WC_Product($value['product_id']);
+                }
                 $sku[$i] = $product->get_sku();
                 $quantity[$i] = $value['qty'];
                 $valueItem[$i] = $value['line_subtotal'];
@@ -3405,7 +3414,7 @@ class PhcFxWoocommerce {
 					            }
 					        }             
 					    }
-					}  
+					 }  
 		    	}	  
 	  		}	
 	  	}
@@ -3421,96 +3430,110 @@ class PhcFxWoocommerce {
  		
 		$settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
 
-	    //Obtain configuration to make login
-	    $this->paramsLogin();
-
-	    //initial request with login data
-	    $ch = curl_init();
-
-	    //URL to save cookie "ASP.NET_SessionId"
-	    curl_setopt($ch, CURLOPT_URL, $this->url);
-	    curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
-	    curl_setopt($ch, CURLOPT_POST, true);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	    //Parameters passed to POST
-
-	    curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-	    curl_setopt($ch, CURLOPT_COOKIEJAR, '');  //could be empty, but cause problems on some hosts
-	    curl_setopt($ch, CURLOPT_COOKIEFILE, '');  //could be empty, but cause problems on some hosts
-	    $response = curl_exec($ch);
-
-	    // send response as JSON
-	    $response = json_decode($response, true); 
-
-	    if (curl_error($ch)) {
-	      $this->writeFileLog('setCommunicationFx', $ch);
-	      unset($_SESSION['username']);
-	    } else if(empty($response)){
-	      $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
-	      unset($_SESSION['username']);
-	    } else if(isset($response['messages'][0]['messageCodeLocale'])){
-	      $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
-	      unset($_SESSION['username']);
-	    } else {  
+	    
       
             //If exists selected products  
-		    if(is_array($refs)){
-		    	foreach ($refs as $key => $value) {            
-			        //Obtain post_id of postmeta table
-			        $productID = wc_get_product_id_by_sku($value);
+            if(is_array($refs)){
+          foreach ($refs as $key => $value) {            
+              //Obtain post_id of postmeta table
+              $productID = wc_get_product_id_by_sku($value);
 
-			        $this->paramsQuery('StWS', 'ref', $value);
+              //Obtain configuration to make login
+      $this->paramsLogin();
 
-		            curl_setopt($ch, CURLOPT_URL, $this->url);
-		            curl_setopt($ch, CURLOPT_POST, false);
-		            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-		            $response = curl_exec($ch);
-		            // send response as JSON
-		            $response = json_decode($response, true);    
+      //initial request with login data
+      $ch = curl_init();
 
-		            if (curl_error($ch)) {
-		              $this->writeFileLog('addNewOrder5', $ch);
-		            } else if(empty($response)){
-		              $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
-		              //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
-		            } else if(isset($response['messages'][0]['messageCodeLocale'])){
-		              $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
-		              //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
-		            } else {
-			          	//Verify if product is returned to update stock
-				        if(!empty($response['result'][0]) && !empty($productID)){
-				            if($settings['backend']['manageStock'] == 'on'){
-				        	    update_post_meta($productID,'_stock',$response['result'][0]['stock']);    
-				              
-					            if($response['result'][0]['stock'] > 0){
-					            	update_post_meta( $productID, '_stock_status', 'instock');
-					            } else {
-					            	update_post_meta( $productID, '_stock_status', 'outofstock');
-					            }
-					        }             
-					    }
-					    $my_post = array(
-						                	'ID'           => $productID,
-						                	'post_title'   => $response['result'][0]['design'],
-						                	'post_content' => $response['result'][0]['design'],
-						                	'post_excerpt' => $response['result'][0]['design'],
-						                	'post_name' => $response['result'][0]['design'],
-						            	);
-						wp_update_post( $my_post );
-			            update_post_meta( $productID, '_price', $response['result'][0][$settings['backend']['productPriceColumn']] );
-			            update_post_meta( $productID, '_regular_price', $response['result'][0][$settings['backend']['productPriceColumn']]); 
-				    }  
-		    	}	  
-	  		}	
+      //URL to save cookie "ASP.NET_SessionId"
+      curl_setopt($ch, CURLOPT_URL, $this->url);
+      curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
+      curl_setopt($ch, CURLOPT_POST, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      //Parameters passed to POST
+
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+      curl_setopt($ch, CURLOPT_COOKIEJAR, '');  //could be empty, but cause problems on some hosts
+      curl_setopt($ch, CURLOPT_COOKIEFILE, '');  //could be empty, but cause problems on some hosts
+      $response = curl_exec($ch);
+
+      // send response as JSON
+      $response = json_decode($response, true); 
+
+      if (curl_error($ch)) {
+        $this->writeFileLog('setCommunicationFx', $ch);
+        unset($_SESSION['username']);
+      } else if(empty($response)){
+        $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+        unset($_SESSION['username']);
+      } else if(isset($response['messages'][0]['messageCodeLocale'])){
+        $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+        unset($_SESSION['username']);
+      } else {  
+
+              $this->paramsQuery('StWS', 'ref', $value);
+
+                curl_setopt($ch, CURLOPT_URL, $this->url);
+                curl_setopt($ch, CURLOPT_POST, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                $response = curl_exec($ch);
+                // send response as JSON
+                $response = json_decode($response, true);    
+
+
+
+                if (curl_error($ch)) {
+                  $this->writeFileLog('addNewOrder5', $ch);
+                } else if(empty($response)){
+                  $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+                  //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
+                } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                  $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+                  //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
+                } else {
+                  //Verify if product is returned to update stock
+                if(!empty($response['result'][0]) && !empty($productID)){
+
+                  if($settings['backend']['manageStock'] == 'on'){
+                    update_post_meta($productID,'_stock',$response['result'][0]['stock']);    
+                      
+                    if($response['result'][0]['stock'] > 0){
+                      update_post_meta( $productID, '_stock_status', 'instock');
+                    } else {
+                      update_post_meta( $productID, '_stock_status', 'outofstock');
+                    }
+                  }  
+
+                  $my_post = array(
+                              'ID'           => $productID,
+                              'post_title'   => $response['result'][0]['design'],
+                              'post_content' => $response['result'][0]['design'],
+                              'post_excerpt' => $response['result'][0]['design'],
+                              'post_name' => $response['result'][0]['design'],
+                          );
+                wp_update_post( $my_post );
+                update_post_meta( $productID, '_price', $response['result'][0][$settings['backend']['productPriceColumn']] );
+                update_post_meta( $productID, '_regular_price', $response['result'][0][$settings['backend']['productPriceColumn']]);            
+              }
+           }
+
+          }  
+          //Logout
+      $this->paramsLogout();
+      //session_destroy();
+      curl_setopt($ch, CURLOPT_URL, $this->url);
+      curl_setopt($ch, CURLOPT_POST, false);
+      $response = curl_exec($ch);
+        } 
+            //
+            //
+            //
+            //
+            //
+		   
 	  	}
-	  	//Logout
-	    $this->paramsLogout();
-	    //session_destroy();
-	    curl_setopt($ch, CURLOPT_URL, $this->url);
-	    curl_setopt($ch, CURLOPT_POST, false);
-	    $response = curl_exec($ch);
+	  	
 	}
 
 	//Add new type of order
