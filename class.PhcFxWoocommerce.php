@@ -4,7 +4,7 @@ class PhcFxWoocommerce {
   public $params;
   public $query;
   public $fieldStatus;
-  public $extraurl = "/PHCWS";
+  public $extraurl = "";
   //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
