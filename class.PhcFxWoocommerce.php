@@ -4,7 +4,7 @@ class PhcFxWoocommerce {
   public $params;
   public $query;
   public $fieldStatus;
-  public $extraurl = "";
+  public $extraurl = "/PHCWS";
   //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
@@ -2978,14 +2978,38 @@ class PhcFxWoocommerce {
       update_post_meta( $new_post_id, '_stock', $stockUnitsProduct);
     }  
 
-    $thumb_url = str_replace(" ", "%20", $thumb_url);
- 
-    $tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
+    
+ //$thumb_url = 'http://phc201412002/trunk/PHCWS/cimagem.aspx?recstamp=39a-46fd-9c11-65535491a17&oritable=ST&uniqueid=imagem&filename=Clientes%201&iflstamp=a3c-43a2-837e-26cabf7160a';
+ $thumb_url = str_replace(" ", "%20", $thumb_url);
+
+ echo $thumb_url;
+    /*$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
     $img = file_get_contents($thumb_url);
     file_put_contents($tmp, $img);
     
     preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
     $file_array['name'] = basename($matches[0]);
+    $file_array['tmp_name'] = $tmp;
+    
+    // If error storing temporarily, unlink
+    if ( is_wp_error( $tmp ) ) {
+      @unlink($file_array['tmp_name']);
+      $file_array['tmp_name'] = '';
+    }*/
+    $tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE.jpg");
+
+    $in = fopen($thumb_url, "rb");
+    $out = fopen($tmp, "wb");
+                
+    while ($chunk = fread($in,8192)){
+      fwrite($out, $chunk, 8192);
+    }
+
+    fclose($in);
+    fclose($out);
+
+    preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
+    $file_array['name'] = 'image.jpg';
     $file_array['tmp_name'] = $tmp;
     
     // If error storing temporarily, unlink
