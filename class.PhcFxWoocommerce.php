@@ -4,7 +4,7 @@ class PhcFxWoocommerce {
   public $params;
   public $query;
   public $fieldStatus;
-  public $extraurl = "";
+  public $extraurl = "/PHCWS";
   //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
@@ -787,6 +787,7 @@ class PhcFxWoocommerce {
         $i = 0;
         $count = count($response['result']);
         $typeInvoice = array(); 
+        $_SESSION['typeOfInvoice'] = '';
 
         while ($i < $count) {
           $selected_dropdown = '';
@@ -828,6 +829,7 @@ class PhcFxWoocommerce {
           $i = 0;
           $count = count($response['result']);
           $typeInvoice = array(); 
+          $_SESSION['typeOfOrder'] = '';
           //Create options of dropdownlist internal documents
           while ($i < $count) {
             $selected_dropdown = '';
@@ -869,6 +871,7 @@ class PhcFxWoocommerce {
 
           $i = 0;
           $count = count($response['result']);
+          $_SESSION['warehouse'] = '';
           //Create options of dropdownlist warehouses
           while ($i < $count) {
             $selected_dropdown = '';
@@ -913,6 +916,7 @@ class PhcFxWoocommerce {
 
           $i = 0;
           $count = count($response['result']);
+          $_SESSION['warehouseOrder'] = '';
           //Create options of dropdownlist warehouses
           while ($i < $count) {
             $selected_dropdown = '';
