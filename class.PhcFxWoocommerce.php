@@ -2570,7 +2570,12 @@ class PhcFxWoocommerce {
             $i = 0;
             
             foreach($order->get_items() as $key => $value){
-              $product = new WC_Product($value['product_id']);
+              if($value['variation_id']!=''){
+                $product = new WC_Product($value['variation_id']);
+              } else {
+                $product = new WC_Product($value['product_id']);
+              }
+              
               $sku[$i] = $product->get_sku();
               $quantity[$i] = $value['qty'];
               $valueItem[$i] = $value['line_subtotal'];
@@ -2590,7 +2595,11 @@ class PhcFxWoocommerce {
             $i = 0;
             
             foreach($order->get_items() as $key => $value){
-              $product = new WC_Product($value['product_id']);
+              if($value['variation_id']!=''){
+                $product = new WC_Product($value['variation_id']);
+              } else {
+                $product = new WC_Product($value['product_id']);
+              }
               $sku[$i] = $product->get_sku();
               $quantity[$i] = $value['qty'];
               $valueItem[$i] = $value['line_subtotal'];
