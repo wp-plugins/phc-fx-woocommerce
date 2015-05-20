@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
   if(jQuery('#nameOfNewOrder').val() == ''){
 	jQuery('#addNewTypeOrderMessage').html('');
   } else {
-	jQuery('#addNewTypeOrderMessage').html('A new type of Order was added in PHC FX');
+	jQuery('#addNewTypeOrderMessage').html('New type of Order was added in PHC FX');
   }
   
   jQuery('#updateStocks').hide();
@@ -14,6 +14,32 @@ jQuery(document).ready(function() {
   //jQuery('#saveAndUpdate').hide();
   jQuery('#updateStocks').hide();
   jQuery('#updateAllFields').hide();
+
+switch(jQuery('#statusOfOrder').val()) {
+	case 'nmdesc':
+    	jQuery("#saveStatusOrder").attr('maxlength','20');
+    	break;
+	case 'texto1':
+    	jQuery("#saveStatusOrder").attr('maxlength','67');
+    	break;
+    case 'texto2':
+    	jQuery("#saveStatusOrder").attr('maxlength','67');
+    	break;
+	case 'texto3':
+    	jQuery("#saveStatusOrder").attr('maxlength','67');
+    	break;
+    case 'tmodelo':
+    	jQuery("#saveStatusOrder").attr('maxlength','12');
+    	break;
+	case 'tmarca':
+    	jQuery("#saveStatusOrder").attr('maxlength','12');
+    	break;
+    case 'tserie':
+    	jQuery("#saveStatusOrder").attr('maxlength','50');
+    	break;
+	default:
+		break;
+} 
 
   //When is changed dropdownlist, input is changed
   jQuery('#statusOfOrder').on('change', function (event) {
@@ -29,6 +55,32 @@ jQuery(document).ready(function() {
   	.done(function (data) {
     	jQuery('#saveStatusOrder').val(data.replace(/"/g, ""));
     })
+
+    switch(jQuery('#statusOfOrder').val()) {
+		case 'nmdesc':
+	    	jQuery("#saveStatusOrder").prop('maxlength',20);
+	    	break;
+		case 'texto1':
+	    	jQuery("#saveStatusOrder").prop('maxlength',67);
+	    	break;
+	    case 'texto2':
+	    	jQuery("#saveStatusOrder").prop('maxlength',67);
+	    	break;
+		case 'texto3':
+	    	jQuery("#saveStatusOrder").prop('maxlength',67);
+	    	break;
+	    case 'tmodelo':
+	    	jQuery("#saveStatusOrder").prop('maxlength',12);
+	    	break;
+		case 'tmarca':
+	    	jQuery("#saveStatusOrder").prop('maxlength',12);
+	    	break;
+	    case 'tserie':
+	    	jQuery("#saveStatusOrder").prop('maxlength',50);
+	    	break;
+		default:
+			break;
+	} 
   });
 
   jQuery('#importToShop').click(function (event) {
@@ -93,6 +145,8 @@ jQuery(document).ready(function() {
 	  	})
 	  	.done(function (data) {
 	        jQuery('.alignleft #messageSuccess').html('');
+
+	        jQuery('.alignleft h2').before('<div id="messageSuccess"><div class="error"><p><strong>Please fill description of products to import them successfully: '+data+'</strong></p></div></div>');
 	        jQuery('.alignleft h2').before('<div id="messageSuccess"><div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Import successfull</strong></p></div></div>');
 	        
 	        jQuery('#saveProductInShop').show();

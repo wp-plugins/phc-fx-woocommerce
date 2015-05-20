@@ -177,7 +177,7 @@
                       </tr>
                       <?php } break;
           case 'nameOfNewOrder':
-            if($_SESSION['username'] != '' && $settings['backend']['warehouseOrder'] != ''){ ?> 
+            if($_SESSION['username'] != '' && $settings['backend']['warehouseOrder'] != '' && $_SESSION['gamaPHCFX'] > 0){ ?> 
                       <tr>
                         <th scope="row">
                           <label for="<?php echo $id ?>"><?php echo $opts['label'] ?></label>
