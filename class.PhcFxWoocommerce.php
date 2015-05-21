@@ -4,7 +4,7 @@ class PhcFxWoocommerce {
   public $params;
   public $query;
   public $fieldStatus;
-  public $extraurl = "";
+  public $extraurl = "/PHCWS";
   //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
@@ -931,6 +931,8 @@ class PhcFxWoocommerce {
                 }
               }
             }
+            
+
             if($typeInvoice[$i]["nmdos"] != ''){
               $_SESSION['typeOfOrder'] .= "<option id=" . $typeInvoice[$i]["nmdos"] . " value=" . $typeInvoice[$i]["ndos"] . " " . $selected_dropdown . ">" .  $typeInvoice[$i]["nmdos"] ."</option><br>";   
             }
@@ -1155,20 +1157,71 @@ class PhcFxWoocommerce {
         $count = count($response['result']);
         $typeInvoice = array(); 
         //Create options of dropdownlist internal documents
-        while ($i < $count) {
-          $selected_dropdown = '';
-          foreach ($response['result'][$i] as $key => $value){
-            if($key == "ndos"){
-              $typeInvoice[$i]["ndos"] = $value;
-              if($settings['backend']['typeOfOrder'] == $value){
-                $selected_dropdown = 'selected';
+          while ($i < $count) {
+            $selected_dropdown = '';
+            $wrongTypeOrder = false;
+            foreach ($response['result'][$i] as $key => $value){
+              if($key == "ndos"){
+                $typeInvoice[$i]["ndos"] = $value;
+                if($settings['backend']['typeOfOrder'] == $value){
+                  $selected_dropdown = 'selected';
+                }
+              } else if ($key == "nmdos"){
+
+                //Obtain type orders
+                $this->paramsQuery('BoWS', 'nmdos', $value);
+
+                curl_setopt($ch, CURLOPT_URL, $this->url);
+                curl_setopt($ch, CURLOPT_POST, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                
+                $response2 = curl_exec($ch);
+                // send response as JSON
+                $response2 = json_decode($response2, true);  
+
+                //Verify if product contain business
+                $x = 0;
+                $businessProduct = false;
+                foreach ($response['result'][$i]['tsProducts'][$x] as $key2 => $value2){
+                  if($key2 == 'productid' && $value2 == 3){
+                    $businessProduct = true;
+                  }
+                  ++$x;
+                }
+
+                if (curl_error($ch)) {
+                  $this->writeFileLog('setCommunicationFx3', $ch);
+                } else if(empty($response)){
+                  $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+                  //$this->messagesError("Can't connect to webservice!! There's an empty response");
+                } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                  $this->writeFileLog('setCommunicationFx3', $response2['messages'][0]['messageCodeLocale']);
+                  //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response2['messages'][0]['messageCodeLocale']);
+                } else {
+                  //Put the same number of order in PHC FX
+                  global $wpdb;
+                  $table_name = $wpdb->prefix."postmeta";
+                  //Obtain next post_id of order in MySQL
+                  $query = "SELECT MAX(post_id) as nextPostId FROM %s";
+                  $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
+           
+                  if(($response2['result'][0]['obrano'] == '' || $response2['result'][0]['obrano'] <= $docid->nextPostId) && $response['result'][$i]['bdempresas'] == 'CL' && $businessProduct == true){
+                    $wrongTypeOrder = false;
+                  } else {
+                    $wrongTypeOrder = true;
+                  }
+                }
+
+                if($wrongTypeOrder == false){
+                  $typeInvoice[$i]["nmdos"] = $value;     
+                }
               }
-            } else if ($key == "nmdos"){
-              $typeInvoice[$i]["nmdos"] = $value;     
             }
-          }
-          echo "<option id=" . $typeInvoice[$i]["nmdos"] . " value=" . $typeInvoice[$i]["ndos"] . " " . $selected_dropdown . ">" .  $typeInvoice[$i]["nmdos"] ."</option><br>"; 
-          ++$i;
+            
+            if($typeInvoice[$i]["nmdos"] != ''){
+              echo "<option id=" . $typeInvoice[$i]["nmdos"] . " value=" . $typeInvoice[$i]["ndos"] . " " . $selected_dropdown . ">" .  $typeInvoice[$i]["nmdos"] ."</option><br>"; 
+            }
+            ++$i;
         }
       }
     }
@@ -1949,35 +2002,35 @@ class PhcFxWoocommerce {
                               $response['result'][0][$statusOrderShop] = $this->fieldStatus;
                             }
 
-                            $result['result'][0]['paisesstampto'] = $paisesstampShipping;
-                            $result['result'][0]['paisto'] = $nomePaisShipping;
+                            $response['result'][0]['paisesstampto'] = $paisesstampShipping;
+                            $response['result'][0]['paisto'] = $nomePaisShipping;
 
                             $shipping_address_1 = sanitize_text_field( $_REQUEST['shipping_address_1'] );
                             $shipping_address_1_ = sanitize_text_field( $_REQUEST['_shipping_address_1'] );
 
                             if($shipping_address_1 != ''){
-                              $result['result'][0]['moradato'] = $shipping_address_1;
+                              $response['result'][0]['moradato'] = $shipping_address_1;
                             } else if ($shipping_address_1_ != ''){
-                              $result['result'][0]['moradato'] = $shipping_address_1_;
-                            }      
+                              $response['result'][0]['moradato'] = $shipping_address_1_;
+                            }    
 
                             $shipping_city = sanitize_text_field( $_REQUEST['shipping_city'] );
                             $shipping_city_ = sanitize_text_field( $_REQUEST['_shipping_city'] );
 
 
                             if($shipping_city != ''){
-                              $result['result'][0]['localto'] = $shipping_city;
+                              $response['result'][0]['localto'] = $shipping_city;
                             } else if ($shipping_city_ != ''){
-                              $result['result'][0]['localto'] = $shipping_city_;
+                              $response['result'][0]['localto'] = $shipping_city_;
                             }
 
                             $shipping_postcode = sanitize_text_field( $_REQUEST['shipping_postcode'] );
                             $shipping_postcode_ = sanitize_text_field( $_REQUEST['_shipping_postcode'] );
 
                             if($shipping_postcode != ''){
-                              $result['result'][0]['codpostto'] = $shipping_postcode;
+                              $response['result'][0]['codpostto'] = $shipping_postcode;
                             } else if ($shipping_postcode_ != ''){
-                              $result['result'][0]['codpostto'] = $shipping_postcode_;
+                              $response['result'][0]['codpostto'] = $shipping_postcode_;
                             }
 
                             $billing_address_1 = sanitize_text_field( $_REQUEST['billing_address_1'] );
@@ -2968,6 +3021,10 @@ class PhcFxWoocommerce {
       $billing_country_ = sanitize_text_field( $_REQUEST['_billing_country'] );
       $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
+      if($_billing_country == ''){
+        $_billing_country = sanitize_text_field( $_REQUEST['_billing_country'] );
+      }
+
       $this->paramsQuery('LocalizationWS', 'nomeabrv', $_billing_country);
 
       curl_setopt($ch, CURLOPT_URL, $this->url);
@@ -2987,7 +3044,12 @@ class PhcFxWoocommerce {
         $paisesstamp = $response['result'][0]['paisesstamp'];
         $nomePais = $response['result'][0]['nome'];
       }
-
+      if($_shipping_country == ''){
+        $_shipping_country = sanitize_text_field( $_REQUEST['_shipping_country'] );
+        if($_shipping_country == ''){
+          $_shipping_country = sanitize_text_field( $_REQUEST['_billing_country'] );
+        }
+      }
       $this->paramsQuery('LocalizationWS', 'nomeabrv', $_shipping_country);
 
       curl_setopt($ch, CURLOPT_URL, $this->url);
@@ -3452,7 +3514,49 @@ class PhcFxWoocommerce {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
             $response = curl_exec($ch);
             // send response as JSON
-            $response = json_decode($response, true);     
+            $response = json_decode($response, true);   
+
+            if($_billing_first_name == '' && $_billing_last_name == ''){
+              $_billing_first_name = sanitize_text_field( $_REQUEST['_billing_first_name'] );
+              $_billing_last_name = sanitize_text_field( $_REQUEST['_billing_last_name'] );
+            }
+
+            if($_billing_city == ''){
+              $_billing_last_name = sanitize_text_field( $_REQUEST['_billing_city'] );
+            }
+
+            if($_billing_address_1 == ''){
+              $_billing_address_1 = sanitize_text_field( $_REQUEST['_billing_address_1'] );
+            }
+
+            if($_billing_postcode == ''){
+              $_billing_postcode = sanitize_text_field( $_REQUEST['_billing_postcode'] );
+            }
+
+            if($_billing_phone == ''){
+              $_billing_phone = sanitize_text_field( $_REQUEST['_billing_phone'] );
+            } 
+
+            if($_shipping_address_1 == ''){
+              $_shipping_address_1 = sanitize_text_field( $_REQUEST['_shipping_address_1'] );
+              if($_shipping_address_1 == ''){
+                $_shipping_address_1 = sanitize_text_field( $_REQUEST['_billing_address_1'] );
+              }
+            }
+
+            if($_shipping_city == ''){
+              $_shipping_city = sanitize_text_field( $_REQUEST['_shipping_city'] );
+              if($_shipping_city == ''){
+                $_shipping_city = sanitize_text_field( $_REQUEST['_billing_city'] );
+              }
+            }
+
+            if($_shipping_postcode == ''){
+              $_shipping_postcode = sanitize_text_field( $_REQUEST['_shipping_postcode'] );
+              if($_shipping_postcode == ''){
+                $_shipping_postcode = sanitize_text_field( $_REQUEST['_billing_postcode'] );
+              }
+            }           
 
             $response['result'][0]['nome'] = $_billing_first_name . " " . $_billing_last_name;
             $response['result'][0]['morada'] = $_billing_address_1;
@@ -3770,6 +3874,7 @@ class PhcFxWoocommerce {
    Function to add products to shop
   **********************************/
   function addProduct($nomeProduct, $contentProduct, $excerptProduct, $slugNameProduct, $stockUnitsProduct, $price, $sku, $manageStock, $visible, $thumb_url){
+    $settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
     global $wpdb;
 
     $post = array(
@@ -4101,7 +4206,58 @@ class PhcFxWoocommerce {
 	      unset($_SESSION['username']);
 	    } else {  
       
-            $this->paramsQuery2('StWS');
+        if($settings['backend']['warehouse'] == -1){
+            $this->paramsQuery2('SaWS');
+        } else {
+            $this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
+        }
+
+        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_POST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+        $response = curl_exec($ch);
+        // send response as JSON
+        $response = json_decode($response, true);  
+
+        if (curl_error($ch)) {
+          $this->writeFileLog('addNewOrder5', $ch);
+        } else if(empty($response)){
+          $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+          //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
+        } else if(isset($response['messages'][0]['messageCodeLocale'])){
+          $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+          //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
+        } else {
+          $i = 0;
+          $count = count($response['result']);
+          $refArray = '';
+          while ($i < $count) {
+            foreach ($response['result'][$i] as $key => $value){
+              foreach ($refs as $arrayOfRef){
+                if($key == "ref" && $arrayOfRef == $value){
+                if($i > 0){
+                  $refArray .= ",";
+                }
+                $arrayRef[$value] = $tmpValueRef;
+                
+                $refArray .= '{
+                                "comparison":0,
+                                "filterItem":"ref",
+                                "valueItem":"'.$value.'",
+                                "groupItem":9,
+                                "checkNull":false,
+                                "skipCheckType":false,
+                                "type":"Number"
+                              }';                                                              
+              } else if($key == "stock") {        
+                $tmpValueRef = $value;
+              }
+            }
+          }
+            ++$i;
+          }
+
+            $this->paramsQuery3('StWS', $refArray);
 
             curl_setopt($ch, CURLOPT_URL, $this->url);
             curl_setopt($ch, CURLOPT_POST, false);
@@ -4136,12 +4292,13 @@ class PhcFxWoocommerce {
 				                                                                "&filename=".$response['result'][$i]['imagem']['imageName'].
 				                                                                "&iflstamp=".$response['result'][$i]['imagem']['iflstamp'].
                                                                         "&imageExtension=.jpg";
-				              	//Add Product
+
+                        //Add Product
 				              	$this->addProduct($response['result'][$i]['design'], 
 				                         $response['result'][$i]['design'], 
 				                         $response['result'][$i]['design'], 
 				                         $response['result'][$i]['design'], 
-				                         $response['result'][$i]['stock'],  
+				                         $arrayRef[$response['result'][$key]['ref']],  
 				                         $response['result'][$i][$settings['backend']['productPriceColumn']],
 				                         $response['result'][$i]['ref'],    
 				                         'yes',
@@ -4154,6 +4311,7 @@ class PhcFxWoocommerce {
 	      		}     
 	    	}	  
 	  	}
+    }
 	  	//Logout
 	    $this->paramsLogout();
 	    //session_destroy();
@@ -4166,87 +4324,142 @@ class PhcFxWoocommerce {
  		
 		$settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
 
-	    //Obtain configuration to make login
-	    $this->paramsLogin();
+      //Obtain configuration to make login
+      $this->paramsLogin();
 
-	    //initial request with login data
-	    $ch = curl_init();
+      //initial request with login data
+      $ch = curl_init();
 
-	    //URL to save cookie "ASP.NET_SessionId"
-	    curl_setopt($ch, CURLOPT_URL, $this->url);
-	    curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
-	    curl_setopt($ch, CURLOPT_POST, true);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	    //Parameters passed to POST
+      //URL to save cookie "ASP.NET_SessionId"
+      curl_setopt($ch, CURLOPT_URL, $this->url);
+      curl_setopt($ch, CURLOPT_USERAGENT,'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/32.0.1700.107 Chrome/32.0.1700.107 Safari/537.36');
+      curl_setopt($ch, CURLOPT_POST, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      //Parameters passed to POST
 
-	    curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-	    curl_setopt($ch, CURLOPT_COOKIEJAR, '');  //could be empty, but cause problems on some hosts
-	    curl_setopt($ch, CURLOPT_COOKIEFILE, '');  //could be empty, but cause problems on some hosts
-	    $response = curl_exec($ch);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $this->query);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+      curl_setopt($ch, CURLOPT_COOKIEJAR, '');  //could be empty, but cause problems on some hosts
+      curl_setopt($ch, CURLOPT_COOKIEFILE, '');  //could be empty, but cause problems on some hosts
+      $response = curl_exec($ch);
 
-	    // send response as JSON
-	    $response = json_decode($response, true); 
+      // send response as JSON
+      $response = json_decode($response, true); 
 
-	    if (curl_error($ch)) {
-	      $this->writeFileLog('setCommunicationFx', $ch);
-	      unset($_SESSION['username']);
-	    } else if(empty($response)){
-	      $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
-	      unset($_SESSION['username']);
-	    } else if(isset($response['messages'][0]['messageCodeLocale'])){
-	      $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
-	      unset($_SESSION['username']);
-	    } else {  
-        	//If exists selected products  
-		    if(is_array($refs)){
-		    	foreach ($refs as $key => $value) {            
-			        //Obtain post_id of postmeta table
-			        $productID = wc_get_product_id_by_sku($value);
+      if (curl_error($ch)) {
+        $this->writeFileLog('setCommunicationFx', $ch);
+        unset($_SESSION['username']);
+      } else if(empty($response)){
+        $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+        unset($_SESSION['username']);
+      } else if(isset($response['messages'][0]['messageCodeLocale'])){
+        $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+        unset($_SESSION['username']);
+      } else {  
 
-			        $this->paramsQuery('StWS', 'ref', $value);
+        if($settings['backend']['warehouse'] == -1){
+            $this->paramsQuery2('SaWS');
+        } else {
+            $this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
+        }
 
-		            curl_setopt($ch, CURLOPT_URL, $this->url);
-		            curl_setopt($ch, CURLOPT_POST, false);
-		            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-		            $response = curl_exec($ch);
-		            // send response as JSON
-		            $response = json_decode($response, true);    
+        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_POST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+        $response = curl_exec($ch);
+        // send response as JSON
+        $response = json_decode($response, true);  
 
-		            if (curl_error($ch)) {
-		              $this->writeFileLog('addNewOrder5', $ch);
-		            } else if(empty($response)){
-		              $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
-		              //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
-		            } else if(isset($response['messages'][0]['messageCodeLocale'])){
-		              $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
-		              //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
-		            } else {
-			          	//Verify if product is returned to update stock
-				        if(!empty($response['result'][0]) && !empty($productID)){
+        if (curl_error($ch)) {
+          $this->writeFileLog('addNewOrder5', $ch);
+        } else if(empty($response)){
+          $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+          //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
+        } else if(isset($response['messages'][0]['messageCodeLocale'])){
+          $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+          //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
+        } else {
+          $i = 0;
+          $count = count($response['result']);
+          $refArray = '';
+          while ($i < $count) {
+            foreach ($response['result'][$i] as $key => $value){
+              foreach ($refs as $arrayOfRef){
+                if($key == "ref" && $arrayOfRef == $value){
+                  if($i > 0){
+                    $refArray .= ",";
+                  }
+                  $arrayRef[$value] = $tmpValueRef;
+                  
+                  $refArray .= '{
+                                  "comparison":0,
+                                  "filterItem":"ref",
+                                  "valueItem":"'.$value.'",
+                                  "groupItem":9,
+                                  "checkNull":false,
+                                  "skipCheckType":false,
+                                  "type":"Number"
+                                }';                                                              
+                } else if($key == "stock") {        
+                  $tmpValueRef = $value;
+                }
+              }
+            }
+            ++$i;
+          }
 
-				            if($settings['backend']['manageStock'] == 'on'){
-				        	    update_post_meta($productID,'_stock',$response['result'][0]['stock']);    
-				              
-					            if($response['result'][0]['stock'] > 0){
-					            	update_post_meta( $productID, '_stock_status', 'instock');
-					            } else {
-					            	update_post_meta( $productID, '_stock_status', 'outofstock');
-					            }
-					        }             
-					    }
-					 }  
-		    	}	  
-	  		}	
-	  	}
-	  	//Logout
-	    $this->paramsLogout();
-	    //session_destroy();
-	    curl_setopt($ch, CURLOPT_URL, $this->url);
-	    curl_setopt($ch, CURLOPT_POST, false);
-	    $response = curl_exec($ch);
-	}
+
+
+          //If exists selected products  
+        if(is_array($refs)){
+          foreach ($refs as $key => $value) {            
+              //Obtain post_id of postmeta table
+              $productID = wc_get_product_id_by_sku($value);
+
+              $this->paramsQuery3('StWS', $refArray);
+
+                curl_setopt($ch, CURLOPT_URL, $this->url);
+                curl_setopt($ch, CURLOPT_POST, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                $response = curl_exec($ch);
+                // send response as JSON
+                $response = json_decode($response, true);    
+
+                if (curl_error($ch)) {
+                  $this->writeFileLog('addNewOrder5', $ch);
+                } else if(empty($response)){
+                  $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+                  //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
+                } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                  $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+                  //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
+                } else {
+                  //Verify if product is returned to update stock
+                if(!empty($response['result'][0]) && !empty($productID)){
+                    if($settings['backend']['manageStock'] == 'on'){
+                      update_post_meta($productID,'_stock',$arrayRef[$response['result'][$key]['ref']]);    
+                      
+                      if($arrayRef[$response['result'][$key]['ref']] > 0){
+                        update_post_meta( $productID, '_stock_status', 'instock');
+                      } else {
+                        update_post_meta( $productID, '_stock_status', 'outofstock');
+                      }
+                  }   
+
+              }
+           }  
+          }   
+        } 
+      }
+    }
+      //Logout
+      $this->paramsLogout();
+      //session_destroy();
+      curl_setopt($ch, CURLOPT_URL, $this->url);
+      curl_setopt($ch, CURLOPT_POST, false);
+      $response = curl_exec($ch);
+  }
 
 	public function updateAllFieldsProducts($refs){
  		
@@ -4294,7 +4507,58 @@ class PhcFxWoocommerce {
         unset($_SESSION['username']);
       } else {  
 
-              $this->paramsQuery('StWS', 'ref', $value);
+        if($settings['backend']['warehouse'] == -1){
+            $this->paramsQuery2('SaWS');
+        } else {
+            $this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
+        }
+
+        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_POST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+        $response = curl_exec($ch);
+        // send response as JSON
+        $response = json_decode($response, true);  
+
+        if (curl_error($ch)) {
+          $this->writeFileLog('addNewOrder5', $ch);
+        } else if(empty($response)){
+          $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+          //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
+        } else if(isset($response['messages'][0]['messageCodeLocale'])){
+          $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+          //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
+        } else {
+          $i = 0;
+          $count = count($response['result']);
+          $refArray = '';
+          while ($i < $count) {
+            foreach ($response['result'][$i] as $keyy => $valuee){
+              foreach ($refs as $arrayOfRef){
+                if($keyy == "ref" && $arrayOfRef == $valuee){
+                if($i > 0){
+                  $refArray .= ",";
+                }
+                $arrayRef[$valuee] = $tmpValueRef;
+                
+                $refArray .= '{
+                                "comparison":0,
+                                "filterItem":"ref",
+                                "valueItem":"'.$valuee.'",
+                                "groupItem":9,
+                                "checkNull":false,
+                                "skipCheckType":false,
+                                "type":"Number"
+                              }';                                                              
+              } else if($keyy == "stock") {        
+                $tmpValueRef = $valuee;
+              }
+            }
+          }
+            ++$i;
+          }
+
+              $this->paramsQuery3('StWS', $refArray);
 
                 curl_setopt($ch, CURLOPT_URL, $this->url);
                 curl_setopt($ch, CURLOPT_POST, false);
@@ -4318,9 +4582,12 @@ class PhcFxWoocommerce {
                 if(!empty($response['result'][0]) && !empty($productID)){
 
                   if($settings['backend']['manageStock'] == 'on'){
-                    update_post_meta($productID,'_stock',$response['result'][0]['stock']);    
+                    update_post_meta($productID,'_stock',$arrayRef[$response['result'][$key]['ref']]);    
+                    echo "REF: " . $response['result'][$key]['ref'];
+                    echo "VALUE: " . $arrayRef[$response['result'][$key]['ref']];
+                    
                       
-                    if($response['result'][0]['stock'] > 0){
+                    if($arrayRef[$response['result'][$key]['ref']] > 0){
                       update_post_meta( $productID, '_stock_status', 'instock');
                     } else {
                       update_post_meta( $productID, '_stock_status', 'outofstock');
@@ -4355,6 +4622,7 @@ class PhcFxWoocommerce {
             //
 		   
 	  	}
+    }
 	  	
 	}
 
