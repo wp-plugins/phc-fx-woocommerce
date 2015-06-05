@@ -4,7 +4,7 @@ class PhcFxWoocommerce {
   public $params;
   public $query;
   public $fieldStatus;
-  public $extraurl = "/PHCWS";
+  public $extraurl = "";
   //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
@@ -817,10 +817,10 @@ class PhcFxWoocommerce {
         $this->writeFileLog('setCommunicationFx2', $ch);
       } else if(empty($response)){
         $this->writeFileLog('setCommunicationFx2', 'EMPTY RESPONSE');
-        $this->messagesError("Can't connect to webservice!! There's an empty response");
+        //$this->messagesError("Can't connect to webservice!! There's an empty response");
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
         $this->writeFileLog('setCommunicationFx2', $response['messages'][0]['messageCodeLocale']);
-        $this->messagesError(" obtain dropdown with type of invoices! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+        //$this->messagesError(" obtain dropdown with type of invoices! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
       } else {
 
         //Create options of dropdownlist invoices
@@ -860,10 +860,10 @@ class PhcFxWoocommerce {
           $this->writeFileLog('setCommunicationFx3', $ch);
         } else if(empty($response)){
           $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
-          $this->messagesError("Can't connect to webservice!! There's an empty response");
+          //$this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
           $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
-          $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+          //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
 
           $i = 0;
@@ -896,12 +896,16 @@ class PhcFxWoocommerce {
                 //Verify if product contain business
                 $x = 0;
                 $businessProduct = false;
-                foreach ($response['result'][$i]['tsProducts'][$x] as $key2 => $value2){
-                  if($key2 == 'productid' && $value2 == 3){
-                    $businessProduct = true;
+
+                if($response['result'][$i]['tsProducts'][$x] != ''){
+                  foreach ($response['result'][$i]['tsProducts'][$x] as $key2 => $value2){
+                    if($key2 == 'productid' && $value2 == 3){
+                      $businessProduct = true;
+                    }
+                    ++$x;
                   }
-                  ++$x;
                 }
+                
 
                 if (curl_error($ch)) {
                   $this->writeFileLog('setCommunicationFx3', $ch);
@@ -955,10 +959,10 @@ class PhcFxWoocommerce {
           $this->writeFileLog('setCommunicationFx3', $ch);
         } else if(empty($response)){
           $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
-          $this->messagesError("Can't connect to webservice!! There's an empty response");
+          //$this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
           $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
-          $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+          //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
 
           $i = 0;
@@ -1000,10 +1004,10 @@ class PhcFxWoocommerce {
           $this->writeFileLog('setCommunicationFx3', $ch);
         } else if(empty($response)){
           $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
-          $this->messagesError("Can't connect to webservice!! There's an empty response");
+          //$this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
           $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
-          $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+          //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
 
           $i = 0;
@@ -4582,10 +4586,7 @@ class PhcFxWoocommerce {
                 if(!empty($response['result'][0]) && !empty($productID)){
 
                   if($settings['backend']['manageStock'] == 'on'){
-                    update_post_meta($productID,'_stock',$arrayRef[$response['result'][$key]['ref']]);    
-                    echo "REF: " . $response['result'][$key]['ref'];
-                    echo "VALUE: " . $arrayRef[$response['result'][$key]['ref']];
-                    
+                    update_post_meta($productID,'_stock',$arrayRef[$response['result'][$key]['ref']]);                        
                       
                     if($arrayRef[$response['result'][$key]['ref']] > 0){
                       update_post_meta( $productID, '_stock_status', 'instock');
@@ -4596,14 +4597,14 @@ class PhcFxWoocommerce {
 
                   $my_post = array(
                               'ID'           => $productID,
-                              'post_title'   => $response['result'][0]['design'],
-                              'post_content' => $response['result'][0]['design'],
-                              'post_excerpt' => $response['result'][0]['design'],
-                              'post_name' => $response['result'][0]['design'],
+                              'post_title'   => $response['result'][$key]['design'],
+                              'post_content' => $response['result'][$key]['design'],
+                              'post_excerpt' => $response['result'][$key]['design'],
+                              'post_name' => $response['result'][$key]['design'],
                           );
                 wp_update_post( $my_post );
-                update_post_meta( $productID, '_price', $response['result'][0][$settings['backend']['productPriceColumn']] );
-                update_post_meta( $productID, '_regular_price', $response['result'][0][$settings['backend']['productPriceColumn']]);            
+                update_post_meta( $productID, '_price', $response['result'][$key][$settings['backend']['productPriceColumn']] );
+                update_post_meta( $productID, '_regular_price', $response['result'][$key][$settings['backend']['productPriceColumn']]);            
               }
            }
 
