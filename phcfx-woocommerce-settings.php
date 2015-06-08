@@ -7,7 +7,6 @@
 ?>
 
 <div class="wrap">
-
   <!-- plugin's header and description -->
   <div style="width: 70%" class="alignleft">
     <h2><?php echo PLUGIN_NAME_WOOCOMMERCE ?> Settings</h2>
@@ -22,23 +21,7 @@
     You can also integrate the products and stocks in the WooCommerce solution and automatically send the invoices to your customers by mail.</p>
     <p>Don't forget to <strong>save your settings</strong> when all done!</p>
     <div class="clear"></div>
-    
   </div>
-
-  <!--<div style="width: 20%" class="alignright">
-    <a href="http://pt.phcfx.com//" target="_blank" title="PHC FX" class="alignleft" style="margin-right: 10px; margin-top: 45px;">
-      <img src="<?php //echo plugins_url('images/woo.png', __FILE__) ?>" width="125" height="125">
-    </a>
-    <!--<div style="border-bottom: 1px solid lightgray;">
-      <h3 style="padding: 0 10px">How to Use ?</h3>
-    </div>
-    <div style="padding: 0 10px;">
-      <blockquote>
-        <p class="description">PUT TEXT HERE TO DESCRIBE PLUGIN.</p>
-      </blockquote>
-      <p>Thats it! :) Enjoy!!</p>
-    </div>-->
-  <!--</div>-->
 
   <div class="clear"></div>
 
@@ -65,7 +48,6 @@
       submit_button();
     ?>
     </div>
-
   </form>
 </div>
 

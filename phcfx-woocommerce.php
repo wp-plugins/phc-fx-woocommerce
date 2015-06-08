@@ -29,8 +29,7 @@ if ( !function_exists( 'add_action' ) ) {
 
 //Check if WooCommerce is active.
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-    
-    // start the plugin of PHC FX
+	// start the plugin of PHC FX
 	PhcFxWoocommerce::self();	
 }
 

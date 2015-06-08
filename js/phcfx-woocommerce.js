@@ -1,125 +1,120 @@
-var debug_mode = true;
+var debug_mode = false;
 
 jQuery(document).ready(function() {
-  //jQuery('#addNewTypeOrderMessage').html('');	
-  //jQuery('#nameOfNewOrder').val('');	
-  if(jQuery('#nameOfNewOrder').val() == ''){
-	jQuery('#addNewTypeOrderMessage').html('');
-  } else {
-	jQuery('#addNewTypeOrderMessage').html('New type of Order was added in PHC FX');
-  }
+	if(jQuery('#nameOfNewOrder').val() == ''){
+		jQuery('#addNewTypeOrderMessage').html('');
+  	} else {
+		jQuery('#addNewTypeOrderMessage').html('New type of Order was added in PHC FX');
+  	}
   
-  jQuery('#updateStocks').hide();
-  jQuery('#saveProductInShop').hide();
-  //jQuery('#saveAndUpdate').hide();
-  jQuery('#updateStocks').hide();
-  jQuery('#updateAllFields').hide();
+	jQuery('#updateStocks').hide();
+	jQuery('#saveProductInShop').hide();
+	jQuery('#updateStocks').hide();
+	jQuery('#updateAllFields').hide();
 
-switch(jQuery('#statusOfOrder').val()) {
-	case 'nmdesc':
-    	jQuery("#saveStatusOrder").attr('maxlength','20');
-    	break;
-	case 'texto1':
-    	jQuery("#saveStatusOrder").attr('maxlength','67');
-    	break;
-    case 'texto2':
-    	jQuery("#saveStatusOrder").attr('maxlength','67');
-    	break;
-	case 'texto3':
-    	jQuery("#saveStatusOrder").attr('maxlength','67');
-    	break;
-    case 'tmodelo':
-    	jQuery("#saveStatusOrder").attr('maxlength','12');
-    	break;
-	case 'tmarca':
-    	jQuery("#saveStatusOrder").attr('maxlength','12');
-    	break;
-    case 'tserie':
-    	jQuery("#saveStatusOrder").attr('maxlength','50');
-    	break;
-	default:
-		break;
-} 
-
-  //When is changed dropdownlist, input is changed
-  jQuery('#statusOfOrder').on('change', function (event) {
-  	
-  	// stop normal form submission handler
-    event.preventDefault();
-
-  	jQuery.post(url, {
-  		action: 'woocommerce_fx',
-  		method: 'statusOfOrder',
-  		selectItems: jQuery('#statusOfOrder').val() 
-  	})
-  	.done(function (data) {
-    	jQuery('#saveStatusOrder').val(data.replace(/"/g, ""));
-    })
-
-    switch(jQuery('#statusOfOrder').val()) {
+	switch(jQuery('#statusOfOrder').val()){
 		case 'nmdesc':
-	    	jQuery("#saveStatusOrder").prop('maxlength',20);
+	    	jQuery("#saveStatusOrder").attr('maxlength','20');
 	    	break;
 		case 'texto1':
-	    	jQuery("#saveStatusOrder").prop('maxlength',67);
+	    	jQuery("#saveStatusOrder").attr('maxlength','67');
 	    	break;
 	    case 'texto2':
-	    	jQuery("#saveStatusOrder").prop('maxlength',67);
+	    	jQuery("#saveStatusOrder").attr('maxlength','67');
 	    	break;
 		case 'texto3':
-	    	jQuery("#saveStatusOrder").prop('maxlength',67);
+	    	jQuery("#saveStatusOrder").attr('maxlength','67');
 	    	break;
 	    case 'tmodelo':
-	    	jQuery("#saveStatusOrder").prop('maxlength',12);
+	    	jQuery("#saveStatusOrder").attr('maxlength','12');
 	    	break;
 		case 'tmarca':
-	    	jQuery("#saveStatusOrder").prop('maxlength',12);
+	    	jQuery("#saveStatusOrder").attr('maxlength','12');
 	    	break;
 	    case 'tserie':
-	    	jQuery("#saveStatusOrder").prop('maxlength',50);
+	    	jQuery("#saveStatusOrder").attr('maxlength','50');
 	    	break;
 		default:
 			break;
 	} 
-  });
 
-  jQuery('#importToShop').click(function (event) {
+  	//When is changed dropdownlist, input is changed
+  	jQuery('#statusOfOrder').on('change', function (event) {
+  		// stop normal form submission handler
+    	event.preventDefault();
 
-  	jQuery('#loader').append('<img style="margin-bottom: 10px; margin-left: 20px;" src="'+pathPlugin+'images/ajax-loader.gif" title="Loading..">');
-    jQuery('#importToShop').hide();
+	  	jQuery.post(url, {
+	  		action: 'woocommerce_fx',
+	  		method: 'statusOfOrder',
+	  		selectItems: jQuery('#statusOfOrder').val() 
+	  	})
+	  	.done(function (data) {
+	    	jQuery('#saveStatusOrder').val(data.replace(/"/g, ""));
+	    })
 
-    // stop normal form submission handler
-    event.preventDefault();
+	  	//Define max size of inputs
+	    switch(jQuery('#statusOfOrder').val()) {
+			case 'nmdesc':
+		    	jQuery("#saveStatusOrder").prop('maxlength',20);
+		    	break;
+			case 'texto1':
+		    	jQuery("#saveStatusOrder").prop('maxlength',67);
+		    	break;
+		    case 'texto2':
+		    	jQuery("#saveStatusOrder").prop('maxlength',67);
+		    	break;
+			case 'texto3':
+		    	jQuery("#saveStatusOrder").prop('maxlength',67);
+		    	break;
+		    case 'tmodelo':
+		    	jQuery("#saveStatusOrder").prop('maxlength',12);
+		    	break;
+			case 'tmarca':
+		    	jQuery("#saveStatusOrder").prop('maxlength',12);
+		    	break;
+		    case 'tserie':
+		    	jQuery("#saveStatusOrder").prop('maxlength',50);
+		    	break;
+			default:
+				break;
+		} 
+  	});
+	
+	//Run to show list of products
+  	jQuery('#importToShop').click(function (event){
+	  	jQuery('#loader').append('<img style="margin-bottom: 10px; margin-left: 20px;" src="'+pathPlugin+'images/ajax-loader.gif" title="Loading..">');
+	    jQuery('#importToShop').hide();
+	    // stop normal form submission handler
+	    event.preventDefault();
 
-    jQuery.post(url, {
-  		action: 'woocommerce_fx',
-  		method: 'listOfProducts'
-  	})
-  	.done(function (data) {
-  		jQuery("#tableOfProducts").html("");
-	    jQuery('#tableOfProducts').append(data);
-	    try{
-	    	jQuery('#tableOfProducts').DataTable({
-	        	   "iDisplayLength": 10,
-	               "bDestroy":true
-	        });
-	        jQuery('#updateStocks').show();
-	        jQuery('#updateAllFields').show();
-	        jQuery('#saveProductInShop').show();
-	        jQuery('#importToShop').show();
-	        jQuery('#loader').html('');
-	      } catch(err) {
-	        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
-	        jQuery('#importToShop').show();
-	        jQuery('#loader').html('');
-	        jQuery('#updateStocks').hide();
-	        jQuery('#updateAllFields').hide();
-	        jQuery('#saveProductInShop').hide();
-	      }
-
-    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
-  	})
-  });
+	    jQuery.post(url, {
+	  		action: 'woocommerce_fx',
+	  		method: 'listOfProducts'
+	  	})
+	  	.done(function (data) {
+	  		jQuery("#tableOfProducts").html("");
+		    jQuery('#tableOfProducts').append(data);
+		    try{
+		    	jQuery('#tableOfProducts').DataTable({
+		        	   "iDisplayLength": 10,
+		               "bDestroy":true
+		        });
+		        jQuery('#updateStocks').show();
+		        jQuery('#updateAllFields').show();
+		        jQuery('#saveProductInShop').show();
+		        jQuery('#importToShop').show();
+		        jQuery('#loader').html('');
+		    } catch(err) {
+		        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
+		        jQuery('#importToShop').show();
+		        jQuery('#loader').html('');
+		        jQuery('#updateStocks').hide();
+		        jQuery('#updateAllFields').hide();
+		        jQuery('#saveProductInShop').hide();
+		    }
+	    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
+	  	})
+  	});
 
   	//Save selected products in online shop
   	jQuery('#saveProductInShop').click(function (event) {
@@ -172,182 +167,176 @@ switch(jQuery('#statusOfOrder').val()) {
 			        jQuery('#saveProductInShop').show();
 			        jQuery('#importToShop').show();
 			        jQuery('#loader').html('');
-			      } catch(err) {
+			    } catch(err) {
 			        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
 			        jQuery('#importToShop').show();
 			        jQuery('#loader').html('');
 			        jQuery('#updateStocks').hide();
 			        jQuery('#updateAllFields').hide();
 			        jQuery('#saveProductInShop').hide();
-			      }
-
+			    }
 		    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
 		  	})
 		})
 	});	
 
-  //Save selected products in online shop
-  jQuery('#updateStocks').click(function (event) {
-    //Update products
-    var arr = new Array();
-    jQuery(".updateStockShop").each(function() {
-      arr.push(jQuery(this).attr('id'));
-    });
+  	//Update stocks of products presented in PHC FX
+  	jQuery('#updateStocks').click(function (event) {
+	    //Update products
+	    var arr = new Array();
+	    jQuery(".updateStockShop").each(function() {
+	      arr.push(jQuery(this).attr('id'));
+	    });
 
-    jQuery('#loader2').html('<img style="margin-top: 10px; margin-left: 20px;" src="'+pathPlugin+'images/ajax-loader.gif" title="Loading..">');
-    jQuery('#saveProductInShop').hide();
-    jQuery('#updateStocks').hide();
-    jQuery('#updateAllFields').hide();
+	    jQuery('#loader2').html('<img style="margin-top: 10px; margin-left: 20px;" src="'+pathPlugin+'images/ajax-loader.gif" title="Loading..">');
+	    jQuery('#saveProductInShop').hide();
+	    jQuery('#updateStocks').hide();
+	    jQuery('#updateAllFields').hide();
 
-    // stop normal form submission handler
-    event.preventDefault();
+	    // stop normal form submission handler
+	    event.preventDefault();
 
-    //save products in MySQL
-    jQuery.post(url, {
-  		action: 'woocommerce_fx',
-  		method: 'updateStocksProducts',
-  		refs: arr
-  	})
-    .done(function (data) {
-        jQuery('.alignleft #messageSuccess').html('');
-        jQuery('.alignleft h2').before('<div id="messageSuccess"><div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Update of selected products successfull</strong></p></div></div>');
-        
-        jQuery('#saveProductInShop').show();
-        jQuery('#updateStocks').show();
-        jQuery('#updateAllFields').show();
-        jQuery('#loader2').html('');
-
-        //Refresh of list of products
-        jQuery.post(url, {
+	    //save products in MySQL
+	    jQuery.post(url, {
 	  		action: 'woocommerce_fx',
-	  		method: 'listOfProducts'
+	  		method: 'updateStocksProducts',
+	  		refs: arr
 	  	})
-	  	.done(function (data) {
-	  		jQuery("#tableOfProducts").html("");
-		    jQuery('#tableOfProducts').append(data);
-		    try{
-		    	jQuery('#tableOfProducts').DataTable({
-		        	   "iDisplayLength": 10,
-		               "bDestroy":true
-		        });
-		        jQuery('#updateStocks').show();
-		        jQuery('#updateAllFields').show();
-		        jQuery('#saveProductInShop').show();
-		        jQuery('#importToShop').show();
-		        jQuery('#loader').html('');
-		      } catch(err) {
-		        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
-		        jQuery('#importToShop').show();
-		        jQuery('#loader').html('');
-		        jQuery('#updateStocks').hide();
-		        jQuery('#updateAllFields').hide();
-		        jQuery('#saveProductInShop').hide();
-		      }
+	    .done(function (data) {
+	        jQuery('.alignleft #messageSuccess').html('');
+	        jQuery('.alignleft h2').before('<div id="messageSuccess"><div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Update of selected products successfull</strong></p></div></div>');
+	        
+	        jQuery('#saveProductInShop').show();
+	        jQuery('#updateStocks').show();
+	        jQuery('#updateAllFields').show();
+	        jQuery('#loader2').html('');
 
-	    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
-	  	})
-    })
-  });
+	        //Refresh of list of products
+	        jQuery.post(url, {
+		  		action: 'woocommerce_fx',
+		  		method: 'listOfProducts'
+		  	})
+		  	.done(function (data) {
+		  		jQuery("#tableOfProducts").html("");
+			    jQuery('#tableOfProducts').append(data);
+			    try{
+			    	jQuery('#tableOfProducts').DataTable({
+			        	   "iDisplayLength": 10,
+			               "bDestroy":true
+			        });
+			        jQuery('#updateStocks').show();
+			        jQuery('#updateAllFields').show();
+			        jQuery('#saveProductInShop').show();
+			        jQuery('#importToShop').show();
+			        jQuery('#loader').html('');
+			    } catch(err) {
+			        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
+			        jQuery('#importToShop').show();
+			        jQuery('#loader').html('');
+			        jQuery('#updateStocks').hide();
+			        jQuery('#updateAllFields').hide();
+			        jQuery('#saveProductInShop').hide();
+			    }
+		    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
+		  	})
+	    })
+ 	});
 
-   //Save selected products in online shop
-  jQuery('#updateAllFields').click(function (event) {
-    //Update products
-    var arr = new Array();
-    jQuery(".updateStockShop").each(function() {
-      arr.push(jQuery(this).attr('id'));
-    });
+    //Update all fields od products presented in PHC FX
+  	jQuery('#updateAllFields').click(function (event) {
+	    //Update products
+	    var arr = new Array();
+	    jQuery(".updateStockShop").each(function() {
+	      arr.push(jQuery(this).attr('id'));
+	    });
 
-    jQuery('#loader2').html('<img style="margin-top: 10px; margin-left: 20px;" src="'+pathPlugin+'images/ajax-loader.gif" title="Loading..">');
-    jQuery('#saveProductInShop').hide();
-    jQuery('#updateStocks').hide();
-    jQuery('#updateAllFields').hide();
-
-    // stop normal form submission handler
-    event.preventDefault();
-
-    //save products in MySQL
-    jQuery.post(url, {
-  		action: 'woocommerce_fx',
-  		method: 'updateAllFieldsProducts',
-  		refs: arr
-  	})
-    .done(function (data) {
-        jQuery('.alignleft #messageSuccess').html('');
-        jQuery('.alignleft h2').before('<div id="messageSuccess"><div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Update of selected products successfull</strong></p></div></div>');
-        
-        jQuery('#saveProductInShop').show();
-        jQuery('#updateStocks').show();
-        jQuery('#updateAllFields').show();
-        jQuery('#loader2').html('');
-
-        //Refresh of list of products
-        jQuery.post(url, {
+	    jQuery('#loader2').html('<img style="margin-top: 10px; margin-left: 20px;" src="'+pathPlugin+'images/ajax-loader.gif" title="Loading..">');
+	    jQuery('#saveProductInShop').hide();
+	    jQuery('#updateStocks').hide();
+	    jQuery('#updateAllFields').hide();
+	    // stop normal form submission handler
+	    event.preventDefault();
+	    //save products in MySQL
+	    jQuery.post(url, {
 	  		action: 'woocommerce_fx',
-	  		method: 'listOfProducts'
+	  		method: 'updateAllFieldsProducts',
+	  		refs: arr
 	  	})
-	  	.done(function (data) {
-	  		jQuery("#tableOfProducts").html("");
-		    jQuery('#tableOfProducts').append(data);
-		    try{
-		    	jQuery('#tableOfProducts').DataTable({
-		        	   "iDisplayLength": 10,
-		               "bDestroy":true
-		        });
-		        jQuery('#updateStocks').show();
-		        jQuery('#updateAllFields').show();
-		        jQuery('#saveProductInShop').show();
-		        jQuery('#importToShop').show();
-		        jQuery('#loader').html('');
-		      } catch(err) {
-		        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
-		        jQuery('#importToShop').show();
-		        jQuery('#loader').html('');
-		        jQuery('#updateStocks').hide();
-		        jQuery('#updateAllFields').hide();
-		        jQuery('#saveProductInShop').hide();
-		      }
+	    .done(function (data) {
+	        jQuery('.alignleft #messageSuccess').html('');
+	        jQuery('.alignleft h2').before('<div id="messageSuccess"><div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Update of selected products successfull</strong></p></div></div>');
+	        
+	        jQuery('#saveProductInShop').show();
+	        jQuery('#updateStocks').show();
+	        jQuery('#updateAllFields').show();
+	        jQuery('#loader2').html('');
 
-	    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
-	  	})
-    })
- });
-
-	 //Save selected products in online shop
-  jQuery('#addNewTypeOfOrder').click(function (event) {
-    // stop normal form submission handler
-    event.preventDefault();
-
-    //save products in MySQL
-    jQuery.post(url, {
-  		action: 'woocommerce_fx',
-  		method: 'newTypeOfOrder',
-  		nameTypeOfOrder: jQuery('#nameOfNewOrder').val(),
-  		manageStock: jQuery('#manageStock').prop('checked'),
-  		warehouse: jQuery('#warehouseOrder').val()
-  	})
-    .done(function () {
-    	if(jQuery('#nameOfNewOrder').val() == ''){
-			jQuery('#addNewTypeOrderMessage').html('');
-		} else {
-			jQuery('#addNewTypeOrderMessage').html('A new type of Order was added in PHC FX');
-		}
-		jQuery('#typeOfOrder').html('');
-		jQuery.post(url, {
-	  		action: 'woocommerce_fx',
-	  		method: 'updateTypeOfOrder'
-	  	})
-	  	.done(function (data) {
-	  		jQuery('#typeOfOrder').html(data);
+	        //Refresh of list of products
+	        jQuery.post(url, {
+		  		action: 'woocommerce_fx',
+		  		method: 'listOfProducts'
+		  	})
+		  	.done(function (data) {
+		  		jQuery("#tableOfProducts").html("");
+			    jQuery('#tableOfProducts').append(data);
+			    try{
+			    	jQuery('#tableOfProducts').DataTable({
+			        	   "iDisplayLength": 10,
+			               "bDestroy":true
+			        });
+			        jQuery('#updateStocks').show();
+			        jQuery('#updateAllFields').show();
+			        jQuery('#saveProductInShop').show();
+			        jQuery('#importToShop').show();
+			        jQuery('#loader').html('');
+			    } catch(err) {
+			        jQuery('#descriptionPlugin').html('<div class="error" style="width: 96%;"><b><p>Incomplete configurations.<br/>Please verify if you fill "Create Invoice" and "Field to obtain product price in PHC FX".</p></b></div>');
+			        jQuery('#importToShop').show();
+			        jQuery('#loader').html('');
+			        jQuery('#updateStocks').hide();
+			        jQuery('#updateAllFields').hide();
+			        jQuery('#saveProductInShop').hide();
+			    }
+		    	jQuery("#tableOfProducts_previous").after("&nbsp;&nbsp;&nbsp;&nbsp;");
+		  	})
     	})
-    })
- });
+ 	});
+
+	//Save new type of order in PHC FX
+  	jQuery('#addNewTypeOfOrder').click(function (event) {
+	    // stop normal form submission handler
+	    event.preventDefault();
+	    //save products in MySQL
+	    jQuery.post(url, {
+	  		action: 'woocommerce_fx',
+	  		method: 'newTypeOfOrder',
+	  		nameTypeOfOrder: jQuery('#nameOfNewOrder').val(),
+	  		manageStock: jQuery('#manageStock').prop('checked'),
+	  		warehouse: jQuery('#warehouseOrder').val()
+	  	})
+	    .done(function () {
+	    	if(jQuery('#nameOfNewOrder').val() == ''){
+				jQuery('#addNewTypeOrderMessage').html('');
+			} else {
+				jQuery('#addNewTypeOrderMessage').html('A new type of Order was added in PHC FX');
+			}
+			jQuery('#typeOfOrder').html('');
+			jQuery.post(url, {
+		  		action: 'woocommerce_fx',
+		  		method: 'updateTypeOfOrder'
+		  	})
+		  	.done(function (data) {
+		  		jQuery('#typeOfOrder').html(data);
+	    	})
+	    })
+ 	});
 
 });
 
 //Select All or Remove All checks
 function toggle(source) {
-  checkboxes = document.getElementsByName('checkboxes');
-  for(var i=0, n=checkboxes.length;i<n;i++) {
-    checkboxes[i].checked = source.checked;
-  }
+	checkboxes = document.getElementsByName('checkboxes');
+  	for(var i=0, n=checkboxes.length;i<n;i++) {
+    	checkboxes[i].checked = source.checked;
+  	}
 }
