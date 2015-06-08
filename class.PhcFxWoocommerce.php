@@ -821,12 +821,12 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('setCommunicationFx2', $ch);
+        $this->writeFileLog('setCommunicationFx3', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('setCommunicationFx2', 'EMPTY RESPONSE');
+        $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
         //$this->messagesError("Can't connect to webservice!! There's an empty response");
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('setCommunicationFx2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
         //$this->messagesError(" obtain dropdown with type of invoices! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
       } else {
         //Create options of dropdownlist invoices
@@ -862,12 +862,12 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);
 
         if (curl_error($ch)) {
-          $this->writeFileLog('setCommunicationFx3', $ch);
+          $this->writeFileLog('setCommunicationFx4', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+          $this->writeFileLog('setCommunicationFx4', 'EMPTY RESPONSE');
           //$this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
+          $this->writeFileLog('setCommunicationFx4', $response['messages'][0]['messageCodeLocale']);
           //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
 
@@ -912,12 +912,12 @@ class PhcFxWoocommerce {
                 }
 
                 if (curl_error($ch)) {
-                  $this->writeFileLog('setCommunicationFx3', $ch);
+                  $this->writeFileLog('setCommunicationFx5', $ch);
                 } else if(empty($response)){
-                  $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+                  $this->writeFileLog('setCommunicationFx5', 'EMPTY RESPONSE');
                   //$this->messagesError("Can't connect to webservice!! There's an empty response");
                 } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                  $this->writeFileLog('setCommunicationFx3', $response2['messages'][0]['messageCodeLocale']);
+                  $this->writeFileLog('setCommunicationFx5', $response2['messages'][0]['messageCodeLocale']);
                   //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response2['messages'][0]['messageCodeLocale']);
                 } else {
                   //Put the same number of order in PHC FX
@@ -958,12 +958,12 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);
 
         if (curl_error($ch)) {
-          $this->writeFileLog('setCommunicationFx3', $ch);
+          $this->writeFileLog('setCommunicationFx6', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+          $this->writeFileLog('setCommunicationFx6', 'EMPTY RESPONSE');
           //$this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
+          $this->writeFileLog('setCommunicationFx6', $response['messages'][0]['messageCodeLocale']);
           //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
           $i = 0;
@@ -1001,12 +1001,12 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);
 
         if (curl_error($ch)) {
-          $this->writeFileLog('setCommunicationFx3', $ch);
+          $this->writeFileLog('setCommunicationFx7', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+          $this->writeFileLog('setCommunicationFx7', 'EMPTY RESPONSE');
           //$this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
+          $this->writeFileLog('setCommunicationFx7', $response['messages'][0]['messageCodeLocale']);
           //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
           $i = 0;
@@ -1046,12 +1046,12 @@ class PhcFxWoocommerce {
           $response = json_decode($response, true);
 
           if (curl_error($ch)) {
-            $this->writeFileLog('setCommunicationFx4', $ch);
+            $this->writeFileLog('setCommunicationFx8', $ch);
           } else if(empty($response)){
-            $this->writeFileLog('setCommunicationFx4', 'EMPTY RESPONSE');
+            $this->writeFileLog('setCommunicationFx8', 'EMPTY RESPONSE');
             $this->messagesError("Can't connect to webservice!! There's an empty response");
           } else if(isset($response['messages'][0]['messageCodeLocale'])){
-            $this->writeFileLog('setCommunicationFx4', $response['messages'][0]['messageCodeLocale']);
+            $this->writeFileLog('setCommunicationFx8', $response['messages'][0]['messageCodeLocale']);
             $this->messagesError(" in configuration of send email with FT! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
           } else {
             //Verify if exists template as default
@@ -1085,11 +1085,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('saveFieldOrderStatus9', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('saveFieldOrderStatus9', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('saveFieldOrderStatus9', $response['messages'][0]['messageCodeLocale']);
       } else {
         if($response['result'][0]['moeda'] != get_option('woocommerce_currency')){
           $this->messagesError(": Please configure currency in shop according to PHC FX");
@@ -1128,11 +1128,11 @@ class PhcFxWoocommerce {
     $response = json_decode($response, true); 
 
     if (curl_error($ch)) {
-      $this->writeFileLog('saveFieldOrderStatus', $ch);
+      $this->writeFileLog('updateTypeOfOrders', $ch);
     } else if(empty($response)){
-      $this->writeFileLog('saveFieldOrderStatus', 'EMPTY RESPONSE');
+      $this->writeFileLog('updateTypeOfOrders', 'EMPTY RESPONSE');
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      $this->writeFileLog('saveFieldOrderStatus', $response['messages'][0]['messageCodeLocale']);
+      $this->writeFileLog('updateTypeOfOrders', $response['messages'][0]['messageCodeLocale']);
     } else {
       //Obtain type orders
       $this->paramsQuery('TsWS', 'inactivo', 0);
@@ -1145,12 +1145,12 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('setCommunicationFx3', $ch);
+        $this->writeFileLog('updateTypeOfOrders2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+        $this->writeFileLog('updateTypeOfOrders2', 'EMPTY RESPONSE');
         $this->messagesError("Can't connect to webservice!! There's an empty response");
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('updateTypeOfOrders2', $response['messages'][0]['messageCodeLocale']);
         $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
       } else {
         $i = 0;
@@ -1188,12 +1188,12 @@ class PhcFxWoocommerce {
               }
 
               if (curl_error($ch)) {
-                $this->writeFileLog('setCommunicationFx3', $ch);
+                $this->writeFileLog('updateTypeOfOrders3', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
+                $this->writeFileLog('updateTypeOfOrders3', 'EMPTY RESPONSE');
                 //$this->messagesError("Can't connect to webservice!! There's an empty response");
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('setCommunicationFx3', $response2['messages'][0]['messageCodeLocale']);
+                $this->writeFileLog('updateTypeOfOrders3', $response2['messages'][0]['messageCodeLocale']);
                 //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response2['messages'][0]['messageCodeLocale']);
               } else {
                 //Put the same number of order in PHC FX
@@ -1254,11 +1254,11 @@ class PhcFxWoocommerce {
     $response = json_decode($response, true); 
 
     if (curl_error($ch)) {
-      $this->writeFileLog('saveFieldOrderStatus', $ch);
+      $this->writeFileLog('statusOfOrder', $ch);
     } else if(empty($response)){
-      $this->writeFileLog('saveFieldOrderStatus', 'EMPTY RESPONSE');
+      $this->writeFileLog('statusOfOrder', 'EMPTY RESPONSE');
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      $this->writeFileLog('saveFieldOrderStatus', $response['messages'][0]['messageCodeLocale']);
+      $this->writeFileLog('statusOfOrder', $response['messages'][0]['messageCodeLocale']);
     } else {
     	//Obtain type invoices
 	    $this->paramsQuery4('TsWS', $selectItems, $settings['backend']['typeOfOrder']);
@@ -1271,11 +1271,11 @@ class PhcFxWoocommerce {
 	    $response = json_decode($response, true);
 
 	    if (curl_error($ch)) {
-	    	$this->writeFileLog('saveFieldOrderStatus2', $ch);
+	    	$this->writeFileLog('statusOfOrder2', $ch);
 	    } else if(empty($response)){
-	        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+	        $this->writeFileLog('statusOfOrder2', 'EMPTY RESPONSE');
 	    } else if(isset($response['messages'][0]['messageCodeLocale'])){
-	        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+	        $this->writeFileLog('statusOfOrder2', $response['messages'][0]['messageCodeLocale']);
 	    } else {
 	    	echo $response['result'][0][$selectItems];
 	    }
@@ -1454,11 +1454,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('addNewOrder2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('addNewOrder2', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('addNewOrder2', $response['messages'][0]['messageCodeLocale']);
       } else {
         $paisesstamp = $response['result'][0]['paisesstamp'];
         $nomePais = $response['result'][0]['nome'];
@@ -1482,11 +1482,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('addNewOrder3', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('addNewOrder3', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('addNewOrder3', $response['messages'][0]['messageCodeLocale']);
       } else {
         $paisesstampShipping = $response['result'][0]['paisesstamp'];
         $nomePaisShipping = $response['result'][0]['nome'];
@@ -1502,11 +1502,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('addNewOrder4', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
       } else {
         //Verify if currency of shop corresponds to PHC FX
         if($response['result'][0]['moeda'] == get_option('woocommerce_currency')){
@@ -1597,11 +1597,11 @@ class PhcFxWoocommerce {
               $response = json_decode($response, true);        
 
               if (curl_error($ch)) {
-                $this->writeFileLog('addNewOrder2', $ch);
+                $this->writeFileLog('addNewOrder5', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('addNewOrder2', 'EMPTY RESPONSE');                
+                $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');                
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('addNewOrder2', $response['messages'][0]['messageCodeLocale']);                
+                $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);                
               } else {  
                 //Have client
                 if(is_array($response['result'][0])){
@@ -1655,11 +1655,11 @@ class PhcFxWoocommerce {
                   $response = json_decode($response, true); 
 
                   if (curl_error($ch)) {
-                    $this->writeFileLog('addNewOrder4', $ch);
+                    $this->writeFileLog('addNewOrder6', $ch);
                   } else if(empty($response)){
-                    $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');                    
+                    $this->writeFileLog('addNewOrder6', 'EMPTY RESPONSE');                    
                   } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                    $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
+                    $this->writeFileLog('addNewOrder6', $response['messages'][0]['messageCodeLocale']);
                     if($_SESSION['nrClient'] != ''){
                       //Inserted client in bd
                       $createClientSuccess = 1;
@@ -1680,11 +1680,11 @@ class PhcFxWoocommerce {
                   $response = json_decode($response, true); 
 
                   if (curl_error($ch)) {
-                    $this->writeFileLog('addNewOrder3', $ch);
+                    $this->writeFileLog('addNewOrder7', $ch);
                   } else if(empty($response)){
-                    $this->writeFileLog('addNewOrder3', 'EMPTY RESPONSE');                    
+                    $this->writeFileLog('addNewOrder7', 'EMPTY RESPONSE');                    
                   } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                    $this->writeFileLog('addNewOrder3', $response['messages'][0]['messageCodeLocale']);                    
+                    $this->writeFileLog('addNewOrder7', $response['messages'][0]['messageCodeLocale']);                    
                   } else {                  
                     //Save number id of client
                     $_SESSION['nrClient'] = $response['result'][0]['no'];
@@ -1735,11 +1735,11 @@ class PhcFxWoocommerce {
                     $response = json_decode($response, true); 
 
                     if (curl_error($ch)) {
-                      $this->writeFileLog('addNewOrder4', $ch);
+                      $this->writeFileLog('addNewOrder8', $ch);
                     } else if(empty($response)){
-                      $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');                      
+                      $this->writeFileLog('addNewOrder8', 'EMPTY RESPONSE');                      
                     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                      $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
+                      $this->writeFileLog('addNewOrder8', $response['messages'][0]['messageCodeLocale']);
                        if($_SESSION['nrClient'] != ''){
                         //Inserted client in bd
                         $createClientSuccess = 1;
@@ -1763,11 +1763,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true);             
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder2', $ch);
+              $this->writeFileLog('addNewOrder9', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder2', 'EMPTY RESPONSE');              
+              $this->writeFileLog('addNewOrder9', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder2', $response['messages'][0]['messageCodeLocale']);              
+              $this->writeFileLog('addNewOrder9', $response['messages'][0]['messageCodeLocale']);              
             } else {  
               //Have generic client
               if(is_array($response['result'][0])){
@@ -1787,12 +1787,12 @@ class PhcFxWoocommerce {
                 $response = json_decode($response, true); 
 
                 if (curl_error($ch)) {
-                  $this->writeFileLog('addNewOrder3', $ch);
+                  $this->writeFileLog('addNewOrder10', $ch);
                 } else if(empty($response)){
-                  $this->writeFileLog('addNewOrder3', 'EMPTY RESPONSE');
+                  $this->writeFileLog('addNewOrder10', 'EMPTY RESPONSE');
                   //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!! There's an empty response!<br/><br/><b>Please insert your client and order in PHC FX manually</b>"));
                 } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                  $this->writeFileLog('addNewOrder3', $response['messages'][0]['messageCodeLocale']);
+                  $this->writeFileLog('addNewOrder10', $response['messages'][0]['messageCodeLocale']);
                   //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your client and order in PHC FX manually</b>"));
                 } else {
                   $response['result'][0]['nome'] = 'Generic Client';
@@ -1812,11 +1812,11 @@ class PhcFxWoocommerce {
                   $response = json_decode($response, true); 
 
                   if (curl_error($ch)) {
-                    $this->writeFileLog('addNewOrder4', $ch);
+                    $this->writeFileLog('addNewOrder11', $ch);
                   } else if(empty($response)){
-                    $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');                    
+                    $this->writeFileLog('addNewOrder11', 'EMPTY RESPONSE');                    
                   } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                    $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
+                    $this->writeFileLog('addNewOrder11', $response['messages'][0]['messageCodeLocale']);
                     if($_SESSION['nrClient'] != ''){
                       //Inserted client in bd
                       $createClientSuccess = 1;
@@ -1858,11 +1858,11 @@ class PhcFxWoocommerce {
                 $response = json_decode($response, true);    
 
                 if (curl_error($ch)) {
-                  $this->writeFileLog('addNewOrder5', $ch);
+                  $this->writeFileLog('addNewOrder12', $ch);
                 } else if(empty($response)){
-                  $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');                    
+                  $this->writeFileLog('addNewOrder12', 'EMPTY RESPONSE');                    
                 } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                  $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);                    
+                  $this->writeFileLog('addNewOrder12', $response['messages'][0]['messageCodeLocale']);                    
                 } else {
                   //If internal document doesn't exists
                   if(empty($response['result'][0])){
@@ -1877,11 +1877,11 @@ class PhcFxWoocommerce {
                     $response = json_decode($response, true); 
 
                     if (curl_error($ch)) {
-                      $this->writeFileLog('addNewOrder6', $ch);
+                      $this->writeFileLog('addNewOrder13', $ch);
                     } else if(empty($response)){
-                      $this->writeFileLog('addNewOrder6', 'EMPTY RESPONSE');                        
+                      $this->writeFileLog('addNewOrder13', 'EMPTY RESPONSE');                        
                     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                      $this->writeFileLog('addNewOrder6', $response['messages'][0]['messageCodeLocale']);                        
+                      $this->writeFileLog('addNewOrder13', $response['messages'][0]['messageCodeLocale']);                        
                     } else {
                       //Obtain VO with updated Bo
                       $this->paramsActBo($response['result'][0]['bostamp'], $_SESSION['nrClient']);
@@ -1902,11 +1902,11 @@ class PhcFxWoocommerce {
                       $response = json_decode($response, true); 
 
                       if (curl_error($ch)) {
-                        $this->writeFileLog('addNewOrder7', $ch);
+                        $this->writeFileLog('addNewOrder14', $ch);
                       } else if(empty($response)){
-                        $this->writeFileLog('addNewOrder7', 'EMPTY RESPONSE');                          
+                        $this->writeFileLog('addNewOrder14', 'EMPTY RESPONSE');                          
                       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                        $this->writeFileLog('addNewOrder7', $response['messages'][0]['messageCodeLocale']);                          
+                        $this->writeFileLog('addNewOrder14', $response['messages'][0]['messageCodeLocale']);                          
                       } else {
                         //Obtain VO with updated Bi and Bo
                         //Update list of Quantity
@@ -2029,11 +2029,11 @@ class PhcFxWoocommerce {
                           $response = json_decode($response, true); 
 
                           if (curl_error($ch)) {
-                            $this->writeFileLog('addNewOrder10', $ch);
+                            $this->writeFileLog('addNewOrder15', $ch);
                           } else if(empty($response)){
-                            $this->writeFileLog('addNewOrder10', 'EMPTY RESPONSE');                              
+                            $this->writeFileLog('addNewOrder15', 'EMPTY RESPONSE');                              
                           } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                            $this->writeFileLog('addNewOrder100', $response['messages'][0]['messageCodeLocale']);
+                            $this->writeFileLog('addNewOrder15', $response['messages'][0]['messageCodeLocale']);
                           } else {
                             $response['result'][0]['paisesstampto'] = $paisesstampShipping;
                             $response['result'][0]['paisto'] = $nomePaisShipping;
@@ -2077,11 +2077,11 @@ class PhcFxWoocommerce {
                             $response = json_decode($response, true); 
 
                             if (curl_error($ch)) {
-                              $this->writeFileLog('addNewOrder10', $ch);
+                              $this->writeFileLog('addNewOrder16', $ch);
                             } else if(empty($response)){
-                              $this->writeFileLog('addNewOrder10', 'EMPTY RESPONSE');                                
+                              $this->writeFileLog('addNewOrder16', 'EMPTY RESPONSE');                                
                             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                              $this->writeFileLog('addNewOrder10', $response['messages'][0]['messageCodeLocale']);                                
+                              $this->writeFileLog('addNewOrder16', $response['messages'][0]['messageCodeLocale']);                                
                             } else {
                               $response = $response['result'][0];
 
@@ -2205,13 +2205,13 @@ class PhcFxWoocommerce {
                           $response = json_decode($response, true); 
 
                           if (curl_error($ch)) {
-                            $this->writeFileLog('addNewOrder12', $ch);
+                            $this->writeFileLog('addNewOrder17', $ch);
                           } else if(empty($response)){
-                            $this->writeFileLog('addNewOrder12', 'EMPTY RESPONSE');
+                            $this->writeFileLog('addNewOrder17', 'EMPTY RESPONSE');
                             //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your line in internal document in PHC FX manually"));
                             break;
                           } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                            $this->writeFileLog('addNewOrder12', $response['messages'][0]['messageCodeLocale']);
+                            $this->writeFileLog('addNewOrder17', $response['messages'][0]['messageCodeLocale']);
                             //$this->sendEmail(utf8_decode("It is not possible to create line in internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your line in internal document in PHC FX manually</b>"));
                             break;
                           }     
@@ -2236,12 +2236,12 @@ class PhcFxWoocommerce {
                     $response2 = json_decode($response2, true); 
 
                     if (curl_error($ch)) {
-                      $this->writeFileLog('addNewOrder13', $ch);
+                      $this->writeFileLog('addNewOrder18', $ch);
                     } else if(empty($response2)){
-                      $this->writeFileLog('addNewOrder13', 'EMPTY RESPONSE');
+                      $this->writeFileLog('addNewOrder18', 'EMPTY RESPONSE');
                       //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
                     } else if(isset($response2['messages'][0]['messageCodeLocale'])){
-                      $this->writeFileLog('addNewOrder13', $response2['messages'][0]['messageCodeLocale']);
+                      $this->writeFileLog('addNewOrder18', $response2['messages'][0]['messageCodeLocale']);
                       //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
                     } else {
                       $response['result'][0]['nome'] = $response2['result'][0]['nome'];
@@ -2258,11 +2258,11 @@ class PhcFxWoocommerce {
                       $response = json_decode($response, true); 
 
                       if (curl_error($ch)) {
-                        $this->writeFileLog('addNewOrder13', $ch);
+                        $this->writeFileLog('addNewOrder19', $ch);
                       } else if(empty($response)){
-                        $this->writeFileLog('addNewOrder13', 'EMPTY RESPONSE');                          
+                        $this->writeFileLog('addNewOrder19', 'EMPTY RESPONSE');                          
                       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                        $this->writeFileLog('addNewOrder13', $response['messages'][0]['messageCodeLocale']);                          
+                        $this->writeFileLog('addNewOrder19', $response['messages'][0]['messageCodeLocale']);                          
                       } else {
                         $response = $response['result'][0];
 
@@ -2294,11 +2294,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true);   
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder5', $ch);
+              $this->writeFileLog('addNewOrder20', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');                
+              $this->writeFileLog('addNewOrder20', 'EMPTY RESPONSE');                
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);                
+              $this->writeFileLog('addNewOrder20', $response['messages'][0]['messageCodeLocale']);                
             } else {
               //Obtain status
               $statusOrderShop = $this->fieldStatusOrder($settings['backend']['statusOfOrder']);
@@ -2319,11 +2319,11 @@ class PhcFxWoocommerce {
               $response = json_decode($response, true); 
 
               if (curl_error($ch)) {
-                $this->writeFileLog('addNewOrder13', $ch);
+                $this->writeFileLog('addNewOrder21', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('addNewOrder13', 'EMPTY RESPONSE');                  
+                $this->writeFileLog('addNewOrder21', 'EMPTY RESPONSE');                  
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('addNewOrder13', $response['messages'][0]['messageCodeLocale']);                  
+                $this->writeFileLog('addNewOrder21', $response['messages'][0]['messageCodeLocale']);                  
               } 
             }
           }
@@ -2380,11 +2380,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('cancelOrder2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('cancelOrder2', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('cancelOrder2', $response['messages'][0]['messageCodeLocale']);
       } else {
         //Verify if currency of shop corresponds to PHC FX
         if($response['result'][0]['moeda'] == get_option('woocommerce_currency')){
@@ -2404,11 +2404,11 @@ class PhcFxWoocommerce {
           $response = json_decode($response, true);      
 
           if (curl_error($ch)) {
-            $this->writeFileLog('cancelOrder2', $ch);
+            $this->writeFileLog('cancelOrder3', $ch);
           } else if(empty($response)){
-            $this->writeFileLog('cancelOrder2', 'EMPTY RESPONSE');
+            $this->writeFileLog('cancelOrder3', 'EMPTY RESPONSE');
           } else if(isset($response['messages'][0]['messageCodeLocale'])){
-            $this->writeFileLog('cancelOrder2', $response['messages'][0]['messageCodeLocale']);
+            $this->writeFileLog('cancelOrder3', $response['messages'][0]['messageCodeLocale']);
           } else {
             if(!empty($response)){          
               //Obtain status
@@ -2430,10 +2430,11 @@ class PhcFxWoocommerce {
               $response = json_decode($response, true); 
 
               if (curl_error($ch)) {
+                $this->writeFileLog('cancelOrder4', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('cancelOrder2', 'EMPTY RESPONSE');
+                $this->writeFileLog('cancelOrder4', 'EMPTY RESPONSE');
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('cancelOrder2', $response['messages'][0]['messageCodeLocale']);
+                $this->writeFileLog('cancelOrder4', $response['messages'][0]['messageCodeLocale']);
               }
             }
           }
@@ -2486,11 +2487,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('completedOrder2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('completedOrder2', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('completedOrder2', $response['messages'][0]['messageCodeLocale']);
       } else {
         //Verify if currency of shop corresponds to PHC FX
         if($response['result'][0]['moeda'] == get_option('woocommerce_currency')){
@@ -2527,11 +2528,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true);  
 
             if (curl_error($ch)) {
-              $this->writeFileLog('completedOrder2', $ch);
+              $this->writeFileLog('completedOrder3', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('completedOrder2', 'EMPTY RESPONSE');              
+              $this->writeFileLog('completedOrder3', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('completedOrder2', $response['messages'][0]['messageCodeLocale']);              
+              $this->writeFileLog('completedOrder3', $response['messages'][0]['messageCodeLocale']);              
             } else {  
               if(!empty($response['result'][0])){          
                 //Obtain status
@@ -2553,10 +2554,11 @@ class PhcFxWoocommerce {
                 $response = json_decode($response, true); 
 
                 if (curl_error($ch)) {
+                  $this->writeFileLog('completedOrder4', $ch);
                 } else if(empty($response)){
-                  $this->writeFileLog('cancelOrder2', 'EMPTY RESPONSE');
+                  $this->writeFileLog('completedOrder4', 'EMPTY RESPONSE');
                 } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                  $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+                  $this->writeFileLog('completedOrder4', $response['messages'][0]['messageCodeLocale']);
                 }
               }
               
@@ -2589,7 +2591,7 @@ class PhcFxWoocommerce {
     $settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
     //See if type of order is configured
     if(empty($settings['backend']['typeOfInvoice']) || $settings['backend']['typeOfInvoice'] == 0){
-      $this->writeFileLog('It is not selected any type of invoice', 'Empty type of invoice');
+      $this->writeFileLog('addInternalDocumentInvoice', 'Empty type of invoice');
     } else {      
       //Obtain new instance of FT based in Bo(bostamp)
       $this->paramsNewInstanceFromReference($response['bostamp']); 
@@ -2601,11 +2603,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true); 
 
       if (curl_error($ch)) {
-        $this->writeFileLog('addInternalDocumentInvoice', $ch);
+        $this->writeFileLog('addInternalDocumentInvoice2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('addInternalDocumentInvoice', 'EMPTY RESPONSE');        
+        $this->writeFileLog('addInternalDocumentInvoice2', 'EMPTY RESPONSE');        
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('addInternalDocumentInvoice', $response['messages'][0]['messageCodeLocale']);        
+        $this->writeFileLog('addInternalDocumentInvoice2', $response['messages'][0]['messageCodeLocale']);        
       } else {
         //Save id of client
         $_SESSION['numberClient'] = $response['result'][0]['no'];
@@ -2621,11 +2623,11 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true); 
 
         if (curl_error($ch)) {
-          $this->writeFileLog('addInternalDocumentInvoice2', $ch);
+          $this->writeFileLog('addInternalDocumentInvoice3', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('addInternalDocumentInvoice2', 'EMPTY RESPONSE');          
+          $this->writeFileLog('addInternalDocumentInvoice3', 'EMPTY RESPONSE');          
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('addInternalDocumentInvoice2', $response['messages'][0]['messageCodeLocale']);          
+          $this->writeFileLog('addInternalDocumentInvoice3', $response['messages'][0]['messageCodeLocale']);          
         } else {
           //Enable to sign Document
           if($response['result'][0]['draftRecord'] == 1){
@@ -2639,11 +2641,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true); 
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addInternalDocumentInvoice3', $ch);
+              $this->writeFileLog('addInternalDocumentInvoice4', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addInternalDocumentInvoice3', 'EMPTY RESPONSE');              
+              $this->writeFileLog('addInternalDocumentInvoice4', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addInternalDocumentInvoice3', $response['messages'][0]['messageCodeLocale']);              
+              $this->writeFileLog('addInternalDocumentInvoice4', $response['messages'][0]['messageCodeLocale']);              
             } else {
               //Manage stock
               if($settings['backend']['manageStock'] == 'on'){
@@ -2677,11 +2679,11 @@ class PhcFxWoocommerce {
                     $response = json_decode($response, true);
 
                     if (curl_error($ch)) {
-                      $this->writeFileLog('addInternalDocumentInvoice4', $ch);
+                      $this->writeFileLog('addInternalDocumentInvoice5', $ch);
                     } else if(empty($response)){
-                      $this->writeFileLog('addInternalDocumentInvoice4', 'EMPTY RESPONSE');                      
+                      $this->writeFileLog('addInternalDocumentInvoice5', 'EMPTY RESPONSE');                      
                     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                      $this->writeFileLog('addInternalDocumentInvoice4', $response['messages'][0]['messageCodeLocale']);                      
+                      $this->writeFileLog('addInternalDocumentInvoice5', $response['messages'][0]['messageCodeLocale']);                      
                     } else {
                       //If find reference, update stock
                       if (is_array($sku)){
@@ -2708,11 +2710,11 @@ class PhcFxWoocommerce {
                 $response = json_decode($response, true);
 
                 if (curl_error($ch)) {
-                  $this->writeFileLog('addInternalDocumentInvoice4', $ch);
+                  $this->writeFileLog('addInternalDocumentInvoice6', $ch);
                 } else if(empty($response)){
-                  $this->writeFileLog('addInternalDocumentInvoice4', 'EMPTY RESPONSE');                  
+                  $this->writeFileLog('addInternalDocumentInvoice6', 'EMPTY RESPONSE');                  
                 } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                  $this->writeFileLog('addInternalDocumentInvoice4', $response['messages'][0]['messageCodeLocale']);                  
+                  $this->writeFileLog('addInternalDocumentInvoice6', $response['messages'][0]['messageCodeLocale']);                  
                 } else {
                   //Verify if exists template as default
                   $i = 0;
@@ -2739,11 +2741,11 @@ class PhcFxWoocommerce {
                     $response = json_decode($response, true);
 
                     if (curl_error($ch)) {
-                      $this->writeFileLog('addInternalDocumentInvoice5', $ch);
+                      $this->writeFileLog('addInternalDocumentInvoice7', $ch);
                     } else if(empty($response)){
-                      $this->writeFileLog('addInternalDocumentInvoice5', 'EMPTY RESPONSE');                      
+                      $this->writeFileLog('addInternalDocumentInvoice7', 'EMPTY RESPONSE');                      
                     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                      $this->writeFileLog('addInternalDocumentInvoice5', $response['messages'][0]['messageCodeLocale']);
+                      $this->writeFileLog('addInternalDocumentInvoice7', $response['messages'][0]['messageCodeLocale']);
                       $this->messagesError(utf8_decode(" in configuration of email to send them to client! Message from Backend: " . $response['messages'][0]['messageCodeLocale']));
                     } else {
                       if($response['result'][0]['email'] != ''){
@@ -2763,11 +2765,11 @@ class PhcFxWoocommerce {
                         $response = json_decode($response, true); 
 
                         if (curl_error($ch)) {
-                          $this->writeFileLog('addInternalDocumentInvoic6', $ch);
+                          $this->writeFileLog('addInternalDocumentInvoic8', $ch);
                         } else if(empty($response)){
-                          $this->writeFileLog('addInternalDocumentInvoic6', 'EMPTY RESPONSE');                          
+                          $this->writeFileLog('addInternalDocumentInvoic8', 'EMPTY RESPONSE');                          
                         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                          $this->writeFileLog('addInternalDocumentInvoice6', $response['messages'][0]['messageCodeLocale']);                          
+                          $this->writeFileLog('addInternalDocumentInvoice8', $response['messages'][0]['messageCodeLocale']);                          
                         }
                       }
                     }
@@ -2809,11 +2811,11 @@ class PhcFxWoocommerce {
                   $response = json_decode($response, true);
 
                   if (curl_error($ch)) {
-                    $this->writeFileLog('addInternalDocumentInvoice4', $ch);
+                    $this->writeFileLog('addInternalDocumentInvoice9', $ch);
                   } else if(empty($response)){
-                    $this->writeFileLog('addInternalDocumentInvoice4', 'EMPTY RESPONSE');                    
+                    $this->writeFileLog('addInternalDocumentInvoice9', 'EMPTY RESPONSE');                    
                   } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                    $this->writeFileLog('addInternalDocumentInvoice4', $response['messages'][0]['messageCodeLocale']);                    
+                    $this->writeFileLog('addInternalDocumentInvoice9', $response['messages'][0]['messageCodeLocale']);                    
                   } else {
                     //If find ref, update stock
                     foreach ($sku as $key => $value) {
@@ -2837,7 +2839,7 @@ class PhcFxWoocommerce {
     $settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
     //See if type of invoice is configured
     if(empty($settings['backend']['typeOfInvoice']) || $settings['backend']['typeOfInvoice'] == 0){
-      $this->writeFileLog('It is not selected any type of invoice', 'Empty type of invoice');
+      $this->writeFileLog('addSimpleFT', 'Empty type of invoice');
     } else {   
       //Put the same number of order in PHC FX
       global $wpdb;
@@ -2892,11 +2894,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('addSimpleFT2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('addSimpleFT2', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('addSimpleFT2', $response['messages'][0]['messageCodeLocale']);
       } else {
         $paisesstamp = $response['result'][0]['paisesstamp'];
         $nomePais = $response['result'][0]['nome'];
@@ -2918,11 +2920,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus2', $ch);
+        $this->writeFileLog('addSimpleFT3', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus2', 'EMPTY RESPONSE');
+        $this->writeFileLog('addSimpleFT3', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus2', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('addSimpleFT3', $response['messages'][0]['messageCodeLocale']);
       } else {
         $paisesstampShipping = $response['result'][0]['paisesstamp'];
         $nomePaisShipping = $response['result'][0]['nome'];
@@ -3027,11 +3029,11 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);        
 
         if (curl_error($ch)) {
-          $this->writeFileLog('addNewOrder2', $ch);
+          $this->writeFileLog('addSimpleFT4', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('addNewOrder2', 'EMPTY RESPONSE');          
+          $this->writeFileLog('addSimpleFT4', 'EMPTY RESPONSE');          
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('addNewOrder2', $response['messages'][0]['messageCodeLocale']);          
+          $this->writeFileLog('addSimpleFT4', $response['messages'][0]['messageCodeLocale']);          
         } else {  
           //Have client
           if(is_array($response['result'][0])){
@@ -3086,11 +3088,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true); 
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder4', $ch);
+              $this->writeFileLog('addSimpleFT5', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');              
+              $this->writeFileLog('addSimpleFT5', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
+              $this->writeFileLog('addSimpleFT5', $response['messages'][0]['messageCodeLocale']);
                if($_SESSION['nrClient'] != ''){
                   //Inserted client in bd
                   $createClientSuccess = 1;
@@ -3111,11 +3113,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true); 
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder3', $ch);
+              $this->writeFileLog('addSimpleFT6', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder3', 'EMPTY RESPONSE');              
+              $this->writeFileLog('addSimpleFT6', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder3', $response['messages'][0]['messageCodeLocale']);              
+              $this->writeFileLog('addSimpleFT6', $response['messages'][0]['messageCodeLocale']);              
             } else {                  
               //Save number id of client
               $_SESSION['nrClient'] = $response['result'][0]['no'];
@@ -3167,11 +3169,11 @@ class PhcFxWoocommerce {
               $response = json_decode($response, true); 
 
               if (curl_error($ch)) {
-                $this->writeFileLog('addNewOrder4', $ch);
+                $this->writeFileLog('addSimpleFT7', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');                
+                $this->writeFileLog('addSimpleFT7', 'EMPTY RESPONSE');                
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
+                $this->writeFileLog('addSimpleFT7', $response['messages'][0]['messageCodeLocale']);
                  if($_SESSION['nrClient'] != ''){
                   //Inserted client in bd
                   $createClientSuccess = 1;
@@ -3194,11 +3196,11 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);             
 
         if (curl_error($ch)) {
-          $this->writeFileLog('addNewOrder2', $ch);
+          $this->writeFileLog('addSimpleFT8', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('addNewOrder2', 'EMPTY RESPONSE');          
+          $this->writeFileLog('addSimpleFT8', 'EMPTY RESPONSE');          
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('addNewOrder2', $response['messages'][0]['messageCodeLocale']);          
+          $this->writeFileLog('addSimpleFT8', $response['messages'][0]['messageCodeLocale']);          
         } else {  
           //Have generic client
           if(is_array($response['result'][0])){
@@ -3220,11 +3222,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true); 
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder3', $ch);
+              $this->writeFileLog('addSimpleFT9', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder3', 'EMPTY RESPONSE');              
+              $this->writeFileLog('addSimpleFT9', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder3', $response['messages'][0]['messageCodeLocale']);              
+              $this->writeFileLog('addSimpleFT9', $response['messages'][0]['messageCodeLocale']);              
             } else {
               $response['result'][0]['nome'] = 'Generic Client';
               $response['result'][0]['clivd'] = true;
@@ -3244,11 +3246,11 @@ class PhcFxWoocommerce {
               $response = json_decode($response, true); 
 
               if (curl_error($ch)) {
-                $this->writeFileLog('addNewOrder4', $ch);
+                $this->writeFileLog('addSimpleFT10', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('addNewOrder4', 'EMPTY RESPONSE');                
+                $this->writeFileLog('addSimpleFT10', 'EMPTY RESPONSE');                
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('addNewOrder4', $response['messages'][0]['messageCodeLocale']);
+                $this->writeFileLog('addSimpleFT10', $response['messages'][0]['messageCodeLocale']);
                  if($_SESSION['nrClient'] != ''){
                   //Inserted client in bd
                   $createClientSuccess = 1;
@@ -3274,11 +3276,11 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true); 
 
         if (curl_error($ch)) {
-          $this->writeFileLog('addSimpleFT', $ch);
+          $this->writeFileLog('addSimpleFT11', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('addSimpleFT', 'EMPTY RESPONSE');          
+          $this->writeFileLog('addSimpleFT11', 'EMPTY RESPONSE');          
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('addSimpleFT', $response['messages'][0]['messageCodeLocale']);          
+          $this->writeFileLog('addSimpleFT11', $response['messages'][0]['messageCodeLocale']);          
         } else {      
           //Obtain id of order and products
           $order = new WC_Order();
@@ -3339,133 +3341,271 @@ class PhcFxWoocommerce {
             // send response as JSON
             $response = json_decode($response, true);   
 
-            if($_billing_first_name == '' && $_billing_last_name == ''){
-              $_billing_first_name = sanitize_text_field( $_REQUEST['_billing_first_name'] );
-              $_billing_last_name = sanitize_text_field( $_REQUEST['_billing_last_name'] );
-            }
-            if($_billing_city == ''){
-              $_billing_last_name = sanitize_text_field( $_REQUEST['_billing_city'] );
-            }
-            if($_billing_address_1 == ''){
-              $_billing_address_1 = sanitize_text_field( $_REQUEST['_billing_address_1'] );
-            }
-            if($_billing_postcode == ''){
-              $_billing_postcode = sanitize_text_field( $_REQUEST['_billing_postcode'] );
-            }
-            if($_billing_phone == ''){
-              $_billing_phone = sanitize_text_field( $_REQUEST['_billing_phone'] );
-            } 
-            if($_shipping_address_1 == ''){
-              $_shipping_address_1 = sanitize_text_field( $_REQUEST['_shipping_address_1'] );
-              if($_shipping_address_1 == ''){
-                $_shipping_address_1 = sanitize_text_field( $_REQUEST['_billing_address_1'] );
-              }
-            }
-            if($_shipping_city == ''){
-              $_shipping_city = sanitize_text_field( $_REQUEST['_shipping_city'] );
-              if($_shipping_city == ''){
-                $_shipping_city = sanitize_text_field( $_REQUEST['_billing_city'] );
-              }
-            }
-            if($_shipping_postcode == ''){
-              $_shipping_postcode = sanitize_text_field( $_REQUEST['_shipping_postcode'] );
-              if($_shipping_postcode == ''){
-                $_shipping_postcode = sanitize_text_field( $_REQUEST['_billing_postcode'] );
-              }
-            }           
-
-            $response['result'][0]['nome'] = $_billing_first_name . " " . $_billing_last_name;
-            $response['result'][0]['morada'] = $_billing_address_1;
-            $response['result'][0]['local'] = $_billing_city;
-            $response['result'][0]['codpost'] = $_billing_postcode;
-            $response['result'][0]['telefone'] = $_billing_phone;
-            $response['result'][0]['moradato'] = $_shipping_address_1;
-            $response['result'][0]['localto'] = $_shipping_city;
-            $response['result'][0]['codpostto'] = $_shipping_postcode;
-            $response['result'][0]['pais'] = $nomePais;
-            $response['result'][0]['paisesstamp'] = $paisesstamp;  
-            $response['result'][0]['paisto'] = $nomePaisShipping;
-            $response['result'][0]['paisesstampto'] = $paisesstampShipping;   
-
-            //Save number of client in FT
-            $response['result'][0]['no'] = $_SESSION['nrClient'];
-
-            foreach ($_SESSION['listOfQuantity'] as $key => $value){
-              $response['result'][0]['fis'][$key]['qtt'] = $value;
-            }
-            foreach ($_SESSION['listOfValueItem'] as $key => $value){
-              $response['result'][0]['fis'][$key]['epv'] = $value;                 
-            }
-            foreach ($_SESSION['listOfSku'] as $key => $value){
-              $response['result'][0]['fis'][$key]['desconto'] = 0;  
-              $response['result'][0]['fis'][$key]['desc2'] = 0;  
-              $response['result'][0]['fis'][$key]['desc3'] = 0;  
-              $response['result'][0]['fis'][$key]['desc4'] = 0;  
-              $response['result'][0]['fis'][$key]['desc5'] = 0;  
-              $response['result'][0]['fis'][$key]['desc6'] = 0;  
-
-              //Eliminate financial discount of client
-              $response['result'][0]['efinv'] = 0;  
-              $response['result'][0]['fin'] = 0;                 
-            }
-
-            // build our web service full URL
-            $settings['backend']['url'] = rtrim($settings['backend']['url'], '/');
-            $this->url = "{$settings['backend']['url']}".$this->extraurl."/REST/FtWS/actEntity";
-            // Create map with request parameters
-            $this->params =  array ('entity' => json_encode($response['result'][0]));
-            // Build Http query using params
-            $this->query = http_build_query ($this->params);
-            curl_setopt($ch, CURLOPT_URL, $this->url);
-            curl_setopt($ch, CURLOPT_POST, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-            $response = curl_exec($ch);
-            // send response as JSON
-            $response = json_decode($response, true);             
-
             if (curl_error($ch)) {
-              $this->writeFileLog('addSimpleFT2', $ch);
+              $this->writeFileLog('addSimpleFT12', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addSimpleFT2', 'EMPTY RESPONSE');              
+              $this->writeFileLog('addSimpleFT12', 'EMPTY RESPONSE');          
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addSimpleFT2', $response['messages'][0]['messageCodeLocale']);              
-            } else {
-              //Save FT
-              $this->paramsSave('FtWS', $response); 
+              $this->writeFileLog('addSimpleFT12', $response['messages'][0]['messageCodeLocale']);          
+            } else {  
+              if($_billing_first_name == '' && $_billing_last_name == ''){
+                $_billing_first_name = sanitize_text_field( $_REQUEST['_billing_first_name'] );
+                $_billing_last_name = sanitize_text_field( $_REQUEST['_billing_last_name'] );
+              }
+              if($_billing_city == ''){
+                $_billing_last_name = sanitize_text_field( $_REQUEST['_billing_city'] );
+              }
+              if($_billing_address_1 == ''){
+                $_billing_address_1 = sanitize_text_field( $_REQUEST['_billing_address_1'] );
+              }
+              if($_billing_postcode == ''){
+                $_billing_postcode = sanitize_text_field( $_REQUEST['_billing_postcode'] );
+              }
+              if($_billing_phone == ''){
+                $_billing_phone = sanitize_text_field( $_REQUEST['_billing_phone'] );
+              } 
+              if($_shipping_address_1 == ''){
+                $_shipping_address_1 = sanitize_text_field( $_REQUEST['_shipping_address_1'] );
+                if($_shipping_address_1 == ''){
+                  $_shipping_address_1 = sanitize_text_field( $_REQUEST['_billing_address_1'] );
+                }
+              }
+              if($_shipping_city == ''){
+                $_shipping_city = sanitize_text_field( $_REQUEST['_shipping_city'] );
+                if($_shipping_city == ''){
+                  $_shipping_city = sanitize_text_field( $_REQUEST['_billing_city'] );
+                }
+              }
+              if($_shipping_postcode == ''){
+                $_shipping_postcode = sanitize_text_field( $_REQUEST['_shipping_postcode'] );
+                if($_shipping_postcode == ''){
+                  $_shipping_postcode = sanitize_text_field( $_REQUEST['_billing_postcode'] );
+                }
+              }           
+
+              $response['result'][0]['nome'] = $_billing_first_name . " " . $_billing_last_name;
+              $response['result'][0]['morada'] = $_billing_address_1;
+              $response['result'][0]['local'] = $_billing_city;
+              $response['result'][0]['codpost'] = $_billing_postcode;
+              $response['result'][0]['telefone'] = $_billing_phone;
+              $response['result'][0]['moradato'] = $_shipping_address_1;
+              $response['result'][0]['localto'] = $_shipping_city;
+              $response['result'][0]['codpostto'] = $_shipping_postcode;
+              $response['result'][0]['pais'] = $nomePais;
+              $response['result'][0]['paisesstamp'] = $paisesstamp;  
+              $response['result'][0]['paisto'] = $nomePaisShipping;
+              $response['result'][0]['paisesstampto'] = $paisesstampShipping;   
+
+              //Save number of client in FT
+              $response['result'][0]['no'] = $_SESSION['nrClient'];
+
+              foreach ($_SESSION['listOfQuantity'] as $key => $value){
+                $response['result'][0]['fis'][$key]['qtt'] = $value;
+              }
+              foreach ($_SESSION['listOfValueItem'] as $key => $value){
+                $response['result'][0]['fis'][$key]['epv'] = $value;                 
+              }
+              foreach ($_SESSION['listOfSku'] as $key => $value){
+                $response['result'][0]['fis'][$key]['desconto'] = 0;  
+                $response['result'][0]['fis'][$key]['desc2'] = 0;  
+                $response['result'][0]['fis'][$key]['desc3'] = 0;  
+                $response['result'][0]['fis'][$key]['desc4'] = 0;  
+                $response['result'][0]['fis'][$key]['desc5'] = 0;  
+                $response['result'][0]['fis'][$key]['desc6'] = 0;  
+
+                //Eliminate financial discount of client
+                $response['result'][0]['efinv'] = 0;  
+                $response['result'][0]['fin'] = 0;                 
+              }
+
+              // build our web service full URL
+              $settings['backend']['url'] = rtrim($settings['backend']['url'], '/');
+              $this->url = "{$settings['backend']['url']}".$this->extraurl."/REST/FtWS/actEntity";
+              // Create map with request parameters
+              $this->params =  array ('entity' => json_encode($response['result'][0]));
+              // Build Http query using params
+              $this->query = http_build_query ($this->params);
               curl_setopt($ch, CURLOPT_URL, $this->url);
               curl_setopt($ch, CURLOPT_POST, false);
               curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
               $response = curl_exec($ch);
               // send response as JSON
-              $response = json_decode($response, true);  
+              $response = json_decode($response, true);             
 
               if (curl_error($ch)) {
-                $this->writeFileLog('addSimpleFT3', $ch);
+                $this->writeFileLog('addSimpleFT13', $ch);
               } else if(empty($response)){
-                $this->writeFileLog('addSimpleFT3', 'EMPTY RESPONSE');                
+                $this->writeFileLog('addSimpleFT13', 'EMPTY RESPONSE');              
               } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                $this->writeFileLog('addSimpleFT3', $response['messages'][0]['messageCodeLocale']);                
+                $this->writeFileLog('addSimpleFT13', $response['messages'][0]['messageCodeLocale']);              
               } else {
-                //Enable to sign Document
-                if($response['result'][0]['draftRecord'] == 1){
-                  //Save ftstamp of invoice
-                  $_SESSION['ftstamp'] = $response['result'][0]['ftstamp'];
+                //Save FT
+                $this->paramsSave('FtWS', $response); 
+                curl_setopt($ch, CURLOPT_URL, $this->url);
+                curl_setopt($ch, CURLOPT_POST, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                $response = curl_exec($ch);
+                // send response as JSON
+                $response = json_decode($response, true);  
 
-                  //Sign document
-                  $this->paramsSignDocument($response['result'][0]['ftstamp']);
-                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                  curl_setopt($ch, CURLOPT_POST, false);
-                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                  $response = curl_exec($ch);
-                  // send response as JSON
-                  $response = json_decode($response, true); 
+                if (curl_error($ch)) {
+                  $this->writeFileLog('addSimpleFT14', $ch);
+                } else if(empty($response)){
+                  $this->writeFileLog('addSimpleFT14', 'EMPTY RESPONSE');                
+                } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                  $this->writeFileLog('addSimpleFT14', $response['messages'][0]['messageCodeLocale']);                
+                } else {
+                  //Enable to sign Document
+                  if($response['result'][0]['draftRecord'] == 1){
+                    //Save ftstamp of invoice
+                    $_SESSION['ftstamp'] = $response['result'][0]['ftstamp'];
 
-                  if (curl_error($ch)) {
-                    $this->writeFileLog('addSimpleFT4', $ch);
-                  } else if(empty($response)){
-                    $this->writeFileLog('addSimpleFT4', 'EMPTY RESPONSE');                    
-                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                    $this->writeFileLog('addSimpleFT4', $response['messages'][0]['messageCodeLocale']);                    
+                    //Sign document
+                    $this->paramsSignDocument($response['result'][0]['ftstamp']);
+                    curl_setopt($ch, CURLOPT_URL, $this->url);
+                    curl_setopt($ch, CURLOPT_POST, false);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                    $response = curl_exec($ch);
+                    // send response as JSON
+                    $response = json_decode($response, true); 
+
+                    if (curl_error($ch)) {
+                      $this->writeFileLog('addSimpleFT15', $ch);
+                    } else if(empty($response)){
+                      $this->writeFileLog('addSimpleFT15', 'EMPTY RESPONSE');                    
+                    } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                      $this->writeFileLog('addSimpleFT15', $response['messages'][0]['messageCodeLocale']);                    
+                    } else {
+                      //Manage stock
+                      if($settings['backend']['manageStock'] == 'on'){
+                        $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
+                        $order_received = get_option('woocommerce_checkout_order_received_endpoint');
+
+                        if(empty($order_received)){
+                          $order = new WC_Order( $post_ID );
+                        } else {
+                          $order = new WC_Order( $order_received );
+                        }
+
+                        $i = 0;
+                        foreach($order->get_items() as $key => $value){
+                          $productReference = wc_get_product( $value['item_meta']['_product_id'][0] );
+                          $sku[$i] = $productReference->get_sku();
+
+                          $productID[$sku[$i]] = $value['item_meta']['_product_id'][0];
+                        }
+
+                        $i = 0;
+                        $count = count($_SESSION['voProducts']['fis']);
+                        while ($i < $count) {
+                          foreach ($_SESSION['voProducts']['fis'][$i] as $key => $value){
+                            //Obtain product from reference
+                            $this->paramsQuery('StWS', 'ref', $_SESSION['voProducts']['fis'][$i]['ref']);
+                            curl_setopt($ch, CURLOPT_URL, $this->url);
+                            curl_setopt($ch, CURLOPT_POST, false);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                            $response = curl_exec($ch);
+                            // send response as JSON
+                            $response = json_decode($response, true);
+
+                            if (curl_error($ch)) {
+                              $this->writeFileLog('addSimpleFT16', $ch);
+                            } else if(empty($response)){
+                              $this->writeFileLog('addSimpleFT16', 'EMPTY RESPONSE');                            
+                            } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                              $this->writeFileLog('addSimpleFT16', $response['messages'][0]['messageCodeLocale']);                            
+                            } else {
+                              //If find ref, update stock
+                              foreach ($sku as $key => $value) {
+                                if($_SESSION['voProducts']['fis'][$i]['ref'] == $value){
+                                  update_post_meta($productID[$value],'_stock',$response['result'][0]['stock']);
+                                }
+                              }
+                            }    
+                          }
+                          ++$i;
+                        }
+                      }
+                      //Verify if are selected type of internal document and send invoice checkbox
+                      if(isset($settings['backend']['typeOfInvoice']) && $settings['backend']['createInvoice'] == 'on' && $settings['backend']['typeOfInvoice'] > 0 && isset($settings['backend']['sendInvoice'])){
+                        //Obtain reports for print
+                        $this->paramsGetReportForPrint();
+                        curl_setopt($ch, CURLOPT_URL, $this->url);
+                        curl_setopt($ch, CURLOPT_POST, false);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                        $response = curl_exec($ch);
+                        // send response as JSON
+                        $response = json_decode($response, true);
+
+                        if (curl_error($ch)) {
+                          $this->writeFileLog('addSimpleFT17', $ch);
+                        } else if(empty($response)){
+                          $this->writeFileLog('addSimpleFT17', 'EMPTY RESPONSE');                        
+                        } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                          $this->writeFileLog('addSimpleFT17', $response['messages'][0]['messageCodeLocale']);                        
+                        } else {
+                          //Verify if exists template as default
+                          $i = 0;
+                          $count = count($response['result']);
+                          $sendEmail = false;
+                          while ($i < $count) {
+                            foreach ($response['result'][$i] as $key => $value){
+                              if($key == 'isDefault' && $value == 1){
+                                $sendEmail = true;
+                                $_SESSION['repstamp'] = $response['result'][$i]['repstamp'];
+                                break;
+                              }
+                            }
+                            ++$i;
+                          }
+                          //If exists template as default
+                          if($sendEmail == true){
+                            //Obtain client
+                            $this->paramsQuery('ClWS', 'no', $_SESSION['numberClient']);
+                            curl_setopt($ch, CURLOPT_URL, $this->url);
+                            curl_setopt($ch, CURLOPT_POST, false);
+                            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                            $response = curl_exec($ch);
+                            // send response as JSON
+                            $response = json_decode($response, true);
+
+                            if (curl_error($ch)) {
+                              $this->writeFileLog('addSimpleFT18', $ch);
+                            } else if(empty($response)){
+                              $this->writeFileLog('addSimpleFT18', 'EMPTY RESPONSE');                            
+                            } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                              $this->writeFileLog('addSimpleFT18', $response['messages'][0]['messageCodeLocale']);
+                              $this->messagesError(utf8_decode(" in configuration of email to send them to client! Message from Backend: " . $response['messages'][0]['messageCodeLocale']));
+                            } else {
+                              if($response['result'][0]['email'] != ''){
+                                //Email To
+                                $_SESSION['emailClient'] = $response['result'][0]['email'];
+                                //Email From
+                                $infoAdmin = $this->get_settingsAdmin();
+                                $emailAdmin = $infoAdmin[3]['default'];
+
+                                //Send FT to email selected
+                                $this->paramsSendReportEmail($_SESSION['repstamp'], $_SESSION['ftstamp'], $_SESSION['emailClient'], $emailAdmin);
+                                curl_setopt($ch, CURLOPT_URL, $this->url);
+                                curl_setopt($ch, CURLOPT_POST, false);
+                                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                                $response = curl_exec($ch);
+                                // send response as JSON
+                                $response = json_decode($response, true); 
+
+                                if (curl_error($ch)) {
+                                  $this->writeFileLog('addSimpleFT19', $ch);
+                                } else if(empty($response)){
+                                  $this->writeFileLog('addSimpleFT19', 'EMPTY RESPONSE');                                
+                                } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                                  $this->writeFileLog('addSimpleFT19', $response['messages'][0]['messageCodeLocale']);                                
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   } else {
                     //Manage stock
                     if($settings['backend']['manageStock'] == 'on'){
@@ -3500,11 +3640,11 @@ class PhcFxWoocommerce {
                           $response = json_decode($response, true);
 
                           if (curl_error($ch)) {
-                            $this->writeFileLog('addInternalDocumentInvoice4', $ch);
+                            $this->writeFileLog('addSimpleFT20', $ch);
                           } else if(empty($response)){
-                            $this->writeFileLog('addInternalDocumentInvoice4', 'EMPTY RESPONSE');                            
+                            $this->writeFileLog('addSimpleFT20', 'EMPTY RESPONSE');                          
                           } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                            $this->writeFileLog('addInternalDocumentInvoice4', $response['messages'][0]['messageCodeLocale']);                            
+                            $this->writeFileLog('addSimpleFT20', $response['messages'][0]['messageCodeLocale']);                          
                           } else {
                             //If find ref, update stock
                             foreach ($sku as $key => $value) {
@@ -3516,136 +3656,6 @@ class PhcFxWoocommerce {
                         }
                         ++$i;
                       }
-                    }
-                    //Verify if are selected type of internal document and send invoice checkbox
-                    if(isset($settings['backend']['typeOfInvoice']) && $settings['backend']['createInvoice'] == 'on' && $settings['backend']['typeOfInvoice'] > 0 && isset($settings['backend']['sendInvoice'])){
-                      //Obtain reports for print
-                      $this->paramsGetReportForPrint();
-                      curl_setopt($ch, CURLOPT_URL, $this->url);
-                      curl_setopt($ch, CURLOPT_POST, false);
-                      curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                      $response = curl_exec($ch);
-                      // send response as JSON
-                      $response = json_decode($response, true);
-
-                      if (curl_error($ch)) {
-                        $this->writeFileLog('addSimpleFT5', $ch);
-                      } else if(empty($response)){
-                        $this->writeFileLog('addSimpleFT5', 'EMPTY RESPONSE');                        
-                      } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                        $this->writeFileLog('addSimpleFT5', $response['messages'][0]['messageCodeLocale']);                        
-                      } else {
-                        //Verify if exists template as default
-                        $i = 0;
-                        $count = count($response['result']);
-                        $sendEmail = false;
-                        while ($i < $count) {
-                          foreach ($response['result'][$i] as $key => $value){
-                            if($key == 'isDefault' && $value == 1){
-                              $sendEmail = true;
-                              $_SESSION['repstamp'] = $response['result'][$i]['repstamp'];
-                              break;
-                            }
-                          }
-                          ++$i;
-                        }
-                        //If exists template as default
-                        if($sendEmail == true){
-                          //Obtain client
-                          $this->paramsQuery('ClWS', 'no', $_SESSION['numberClient']);
-                          curl_setopt($ch, CURLOPT_URL, $this->url);
-                          curl_setopt($ch, CURLOPT_POST, false);
-                          curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                          $response = curl_exec($ch);
-                          // send response as JSON
-                          $response = json_decode($response, true);
-
-                          if (curl_error($ch)) {
-                            $this->writeFileLog('addSimpleFT6', $ch);
-                          } else if(empty($response)){
-                            $this->writeFileLog('addSimpleFT6', 'EMPTY RESPONSE');                            
-                          } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                            $this->writeFileLog('addSimpleFT6', $response['messages'][0]['messageCodeLocale']);
-                            $this->messagesError(utf8_decode(" in configuration of email to send them to client! Message from Backend: " . $response['messages'][0]['messageCodeLocale']));
-                          } else {
-                            if($response['result'][0]['email'] != ''){
-                              //Email To
-                              $_SESSION['emailClient'] = $response['result'][0]['email'];
-                              //Email From
-                              $infoAdmin = $this->get_settingsAdmin();
-                              $emailAdmin = $infoAdmin[3]['default'];
-
-                              //Send FT to email selected
-                              $this->paramsSendReportEmail($_SESSION['repstamp'], $_SESSION['ftstamp'], $_SESSION['emailClient'], $emailAdmin);
-                              curl_setopt($ch, CURLOPT_URL, $this->url);
-                              curl_setopt($ch, CURLOPT_POST, false);
-                              curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                              $response = curl_exec($ch);
-                              // send response as JSON
-                              $response = json_decode($response, true); 
-
-                              if (curl_error($ch)) {
-                                $this->writeFileLog('addInternalDocumentInvoic6', $ch);
-                              } else if(empty($response)){
-                                $this->writeFileLog('addInternalDocumentInvoic6', 'EMPTY RESPONSE');                                
-                              } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                                $this->writeFileLog('addInternalDocumentInvoice6', $response['messages'][0]['messageCodeLocale']);                                
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                } else {
-                  //Manage stock
-                  if($settings['backend']['manageStock'] == 'on'){
-                    $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
-                    $order_received = get_option('woocommerce_checkout_order_received_endpoint');
-
-                    if(empty($order_received)){
-                      $order = new WC_Order( $post_ID );
-                    } else {
-                      $order = new WC_Order( $order_received );
-                    }
-
-                    $i = 0;
-                    foreach($order->get_items() as $key => $value){
-                      $productReference = wc_get_product( $value['item_meta']['_product_id'][0] );
-                      $sku[$i] = $productReference->get_sku();
-
-                      $productID[$sku[$i]] = $value['item_meta']['_product_id'][0];
-                    }
-
-                    $i = 0;
-                    $count = count($_SESSION['voProducts']['fis']);
-                    while ($i < $count) {
-                      foreach ($_SESSION['voProducts']['fis'][$i] as $key => $value){
-                        //Obtain product from reference
-                        $this->paramsQuery('StWS', 'ref', $_SESSION['voProducts']['fis'][$i]['ref']);
-                        curl_setopt($ch, CURLOPT_URL, $this->url);
-                        curl_setopt($ch, CURLOPT_POST, false);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                        $response = curl_exec($ch);
-                        // send response as JSON
-                        $response = json_decode($response, true);
-
-                        if (curl_error($ch)) {
-                          $this->writeFileLog('addInternalDocumentInvoice4', $ch);
-                        } else if(empty($response)){
-                          $this->writeFileLog('addInternalDocumentInvoice4', 'EMPTY RESPONSE');                          
-                        } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                          $this->writeFileLog('addInternalDocumentInvoice4', $response['messages'][0]['messageCodeLocale']);                          
-                        } else {
-                          //If find ref, update stock
-                          foreach ($sku as $key => $value) {
-                            if($_SESSION['voProducts']['fis'][$i]['ref'] == $value){
-                              update_post_meta($productID[$value],'_stock',$response['result'][0]['stock']);
-                            }
-                          }
-                        }    
-                      }
-                      ++$i;
                     }
                   }
                 }
@@ -3775,13 +3785,13 @@ class PhcFxWoocommerce {
     $response = curl_exec($ch);
 
     if (curl_error($ch)) {
-      $this->writeFileLog('setCommunicationFx', $ch);
+      $this->writeFileLog('listProducts', $ch);
       unset($_SESSION['username']);
     } else if(empty($response)){
-      $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+      $this->writeFileLog('listProducts', 'EMPTY RESPONSE');
       unset($_SESSION['username']);
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+      $this->writeFileLog('listProducts', $response['messages'][0]['messageCodeLocale']);
       unset($_SESSION['username']);
     } else {       
       //Configured "All warehouses" in product settings  
@@ -3799,11 +3809,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);  
 
       if (curl_error($ch)) {
-        $this->writeFileLog('addNewOrder5', $ch);
+        $this->writeFileLog('listProducts2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');        
+        $this->writeFileLog('listProducts2', 'EMPTY RESPONSE');        
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);        
+        $this->writeFileLog('listProducts2', $response['messages'][0]['messageCodeLocale']);        
       } else {
 			 	$i = 0;
 				$count = count($response['result']);
@@ -3842,11 +3852,11 @@ class PhcFxWoocommerce {
   			$response = json_decode($response, true);   
 
   			if (curl_error($ch)) {
-  			  $this->writeFileLog('addNewOrder5', $ch);
+  			  $this->writeFileLog('listProducts3', $ch);
   			} else if(empty($response)){
-  			  $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');  			  
+  			  $this->writeFileLog('listProducts3', 'EMPTY RESPONSE');  			  
   			} else if(isset($response['messages'][0]['messageCodeLocale'])){
-  			  $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);  			  
+  			  $this->writeFileLog('listProducts3', $response['messages'][0]['messageCodeLocale']);  			  
   			} else {
 		     	//Know which column is used to see iva included based on backend configuration of plugin
 	      	switch ($settings['backend']['productPriceColumn']) {
@@ -3924,7 +3934,7 @@ class PhcFxWoocommerce {
 		         	}
 					    echo $tableProducts;
 	        	} else {
-	          		$this->writeFileLog('Products: Empty productPriceColumn', '');
+	          		$this->writeFileLog('listProducts4', 'Products: Empty productPriceColumn');
 	        	}  
 	      	} 
 		    }
@@ -3964,13 +3974,13 @@ class PhcFxWoocommerce {
     $response = json_decode($response, true); 
 
     if (curl_error($ch)) {
-      $this->writeFileLog('setCommunicationFx', $ch);
+      $this->writeFileLog('saveProducts', $ch);
       unset($_SESSION['username']);
     } else if(empty($response)){
-      $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+      $this->writeFileLog('saveProducts', 'EMPTY RESPONSE');
       unset($_SESSION['username']);
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+      $this->writeFileLog('saveProducts', $response['messages'][0]['messageCodeLocale']);
       unset($_SESSION['username']);
     } else {  
       //Configured "All warehouses" in product settings 
@@ -3987,11 +3997,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);  
 
       if (curl_error($ch)) {
-        $this->writeFileLog('addNewOrder5', $ch);
+        $this->writeFileLog('saveProducts2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');          
+        $this->writeFileLog('saveProducts2', 'EMPTY RESPONSE');          
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);          
+        $this->writeFileLog('saveProducts2', $response['messages'][0]['messageCodeLocale']);          
       } else {
         $i = 0;
         $count = count($response['result']);
@@ -4033,11 +4043,11 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);    
 
         if (curl_error($ch)) {
-          $this->writeFileLog('addNewOrder5', $ch);
+          $this->writeFileLog('saveProducts3', $ch);
         } else if(empty($response)){
-          $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');            
+          $this->writeFileLog('saveProducts3', 'EMPTY RESPONSE');            
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);            
+          $this->writeFileLog('saveProducts3', $response['messages'][0]['messageCodeLocale']);            
         } else {
           //If exists selected products  
     			if(is_array($refs)){
@@ -4103,13 +4113,13 @@ class PhcFxWoocommerce {
     $response = json_decode($response, true); 
 
     if (curl_error($ch)) {
-      $this->writeFileLog('setCommunicationFx', $ch);
+      $this->writeFileLog('updateStocksProducts', $ch);
       unset($_SESSION['username']);
     } else if(empty($response)){
-      $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+      $this->writeFileLog('updateStocksProducts', 'EMPTY RESPONSE');
       unset($_SESSION['username']);
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+      $this->writeFileLog('updateStocksProducts', $response['messages'][0]['messageCodeLocale']);
       unset($_SESSION['username']);
     } else {  
       //Configured "All warehouses" in product settings 
@@ -4126,11 +4136,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);  
 
       if (curl_error($ch)) {
-        $this->writeFileLog('addNewOrder5', $ch);
+        $this->writeFileLog('updateStocksProducts2', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');        
+        $this->writeFileLog('updateStocksProducts2', 'EMPTY RESPONSE');        
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);        
+        $this->writeFileLog('updateStocksProducts2', $response['messages'][0]['messageCodeLocale']);        
       } else {
         $i = 0;
         $count = count($response['result']);
@@ -4175,12 +4185,12 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true);    
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder5', $ch);
+              $this->writeFileLog('updateStocksProducts3', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+              $this->writeFileLog('updateStocksProducts3', 'EMPTY RESPONSE');
               //$this->sendEmail(utf8_decode("It is not possible to create client!<br/><br/>Can't connect to webservice!<br/><br/>There's an empty response!<br/><br/>Please insert your internal document in PHC FX manually"));
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+              $this->writeFileLog('updateStocksProducts3', $response['messages'][0]['messageCodeLocale']);
               //$this->sendEmail(utf8_decode("It is not possible to save header of internal document!<br/><br/>Error from Backend: " . $response['messages'][0]['messageCodeLocale'] . "!<br/><br/><b>Please insert your internal document in PHC FX manually</b>"));
             } else {
               //Verify if product is returned to update stock
@@ -4237,13 +4247,13 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true); 
 
         if (curl_error($ch)) {
-          $this->writeFileLog('setCommunicationFx', $ch);
+          $this->writeFileLog('updateAllFieldsProducts', $ch);
           unset($_SESSION['username']);
         } else if(empty($response)){
-          $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+          $this->writeFileLog('updateAllFieldsProducts', 'EMPTY RESPONSE');
           unset($_SESSION['username']);
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-          $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+          $this->writeFileLog('updateAllFieldsProducts', $response['messages'][0]['messageCodeLocale']);
           unset($_SESSION['username']);
         } else {  
           //Configured "All warehouses" in product settings 
@@ -4261,11 +4271,11 @@ class PhcFxWoocommerce {
           $response = json_decode($response, true);  
 
           if (curl_error($ch)) {
-            $this->writeFileLog('addNewOrder5', $ch);
+            $this->writeFileLog('updateAllFieldsProducts2', $ch);
           } else if(empty($response)){
-            $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');            
+            $this->writeFileLog('updateAllFieldsProducts2', 'EMPTY RESPONSE');            
           } else if(isset($response['messages'][0]['messageCodeLocale'])){
-            $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);            
+            $this->writeFileLog('updateAllFieldsProducts2', $response['messages'][0]['messageCodeLocale']);            
           } else {
             $i = 0;
             $count = count($response['result']);
@@ -4305,11 +4315,11 @@ class PhcFxWoocommerce {
             $response = json_decode($response, true);    
 
             if (curl_error($ch)) {
-              $this->writeFileLog('addNewOrder5', $ch);
+              $this->writeFileLog('updateAllFieldsProducts3', $ch);
             } else if(empty($response)){
-              $this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');              
+              $this->writeFileLog('updateAllFieldsProducts3', 'EMPTY RESPONSE');              
             } else if(isset($response['messages'][0]['messageCodeLocale'])){
-              $this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);              
+              $this->writeFileLog('updateAllFieldsProducts3', $response['messages'][0]['messageCodeLocale']);              
             } else {
               //Verify if product is returned to update stock
               if(!empty($response['result'][0]) && !empty($productID)){
@@ -4368,13 +4378,13 @@ class PhcFxWoocommerce {
     $response = json_decode($response, true); 
 
     if (curl_error($ch)) {
-      $this->writeFileLog('setCommunicationFx', $ch);
+      $this->writeFileLog('newTypeOfOrder', $ch);
       unset($_SESSION['username']);
     } else if(empty($response)){
-      $this->writeFileLog('setCommunicationFx', 'EMPTY RESPONSE');
+      $this->writeFileLog('newTypeOfOrder', 'EMPTY RESPONSE');
       unset($_SESSION['username']);
     } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      $this->writeFileLog('setCommunicationFx', $response['messages'][0]['messageCodeLocale']);
+      $this->writeFileLog('newTypeOfOrder', $response['messages'][0]['messageCodeLocale']);
       unset($_SESSION['username']);
     } else {  
       $this->paramsNewInstance('TsWS', 0);
@@ -4386,11 +4396,11 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);   
 
       if (curl_error($ch)) {
-      	$this->writeFileLog('addNewOrder5', $ch);
+      	$this->writeFileLog('newTypeOfOrder2', $ch);
       } else if(empty($response)){
-      	$this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+      	$this->writeFileLog('newTypeOfOrder2', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-      	$this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+      	$this->writeFileLog('newTypeOfOrder2', $response['messages'][0]['messageCodeLocale']);
       } else {
         //Change VO
       	$response['result'][0]['nmdos'] = $nameTypeOfOrder;
@@ -4445,11 +4455,11 @@ class PhcFxWoocommerce {
         $response = json_decode($response, true);   
 
         if (curl_error($ch)) {
-        	$this->writeFileLog('addNewOrder5', $ch);
+        	$this->writeFileLog('newTypeOfOrder3', $ch);
         } else if(empty($response)){
-        	$this->writeFileLog('addNewOrder5', 'EMPTY RESPONSE');
+        	$this->writeFileLog('newTypeOfOrder3', 'EMPTY RESPONSE');
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        	$this->writeFileLog('addNewOrder5', $response['messages'][0]['messageCodeLocale']);
+        	$this->writeFileLog('newTypeOfOrder3', $response['messages'][0]['messageCodeLocale']);
         }
 	    }
   	}
