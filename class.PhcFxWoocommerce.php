@@ -5,7 +5,6 @@ class PhcFxWoocommerce {
   public $query;
   public $fieldStatus;
   public $extraurl = "";
-  //public $extraurl = "/PHCWS";
 
   private $validSettings = false;
 
@@ -13,8 +12,7 @@ class PhcFxWoocommerce {
   private $options = array(
     'backend' => array(
       'username'          => array('label' => 'Username',                                   'type' => 'text',          'required' => true,  'descr' => 'This username allows the backend to accept data sent from this plugin.', 'notice' => 'This can not be empty! Please enter your username...'),
-      'password'          => array('label' => 'Password',                                   'type' => 'password',      'required' => true,  'descr' => 'This password allows the backend to accept data sent from this plugin.', 'notice' => 'This can not be empty! Please enter your password...'),
-      'appid'             => array('label' => 'Application ID',                             'type' => 'text',          'required' => true,  'descr' => 'Here you should enter PHC FX Engine\'s Application ID key.<br>This allows your application to communicate with PHC FX Engine.', 'notice' => 'PHC-FX Engine is disabled! Please enter your Application ID...'),
+      'password'          => array('label' => 'Password',                                   'type' => 'password',      'required' => true,  'descr' => 'This password allows the backend to accept data sent from this plugin.', 'notice' => 'This can not be empty! Please enter your password...'),      
       'url'               => array('label' => 'Backend URL',                                'type' => 'url',           'required' => true,  'descr' => 'The URL of your PHC FX application.<br>Something like, e.g. https://myurl.com/myphc', 'notice' => 'No backend URL! Please define your backend URL...'),
       'dbname'            => array('label' => 'Database Name',                              'type' => 'text',          'required' => false, 'descr' => 'Enter the name of the PHC FX company where you want save your information.<br>You can leave this empty if you only work with one company.', 'notice' => ''),
       'createInvoice'     => array('label' => 'Create Orders and Invoices',                 'type' => 'checkbox',      'required' => false, 'checkboxDescription' => 'Create invoices for orders that come in, otherwise only the client is created (recommended).', 'notice' => ''),
@@ -91,6 +89,41 @@ class PhcFxWoocommerce {
 
     // handler for form submission
     add_action('admin_post_woocommerce_fx', array($this, 'woocommerce_fx'));
+
+    //Verify if exists token in mysql db
+    global $wpdb;
+    $table_name = $wpdb->prefix."postmeta"; 
+
+    //If exists GET['fxtoken'], so popup is open to obtain key
+    $accessToken = filter_var($_GET['accessToken'], FILTER_SANITIZE_STRING);
+    
+    if($accessToken != ''){
+      //Save token in Mysql db
+      $query = "SELECT * FROM %s WHERE meta_key = %s";
+      $resultDB = $wpdb->get_row(str_replace("'".$table_name."'", $table_name, $wpdb->prepare($query, $table_name, '_token')));
+      //Verify if token already exists
+      if($resultDB->meta_id != ''){
+        //Update value in database mysql
+        update_post_meta($resultDB->meta_id, '_token', $accessToken);      
+      } else {
+        //Obtain next post_id of order in MySQL
+        $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
+        $token = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
+        //add to table postmeta a key of order and stamp of internal document
+        add_post_meta($token->nextPostId, '_token', $accessToken);
+      }
+
+      //Close popup and refresh parent page
+      echo "<script type='text/javascript'>
+              function RefreshParent() {
+                if(window.opener != null && !window.opener.closed) {
+                  window.opener.location.reload();
+                }
+              }
+              window.onbeforeunload = RefreshParent;
+              window.close();
+            </script>";
+    }
   }
 
   //Obtain info of plugins and save information
@@ -408,6 +441,12 @@ class PhcFxWoocommerce {
   //Header to make login
   public function paramsLogin(){
     $settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
+
+    global $wpdb;
+    $table_name = $wpdb->prefix."postmeta"; 
+    $query = "SELECT meta_value FROM %s WHERE meta_key = %s";
+    $resultDB = $wpdb->get_row(str_replace("'".$table_name."'", $table_name, $wpdb->prepare($query, $table_name, '_token')));
+
     // build our web service full URL
     $settings['backend']['url'] = rtrim($settings['backend']['url'], '/');
     $this->url = "{$settings['backend']['url']}".$this->extraurl."/REST/UserLoginWS/userLoginCompany";
@@ -415,7 +454,8 @@ class PhcFxWoocommerce {
     // Create map with request parameters
     $this->params = array ('userCode' => $settings['backend']['username'], 
                      'password' => $settings['backend']['password'], 
-                     'applicationType' => $settings['backend']['appid'],
+                     //'applicationType' => $resultDB->meta_value,
+                     'applicationType' => 'HYU45F-FKEIDD-K93DUJ-ALRNJD',
                      'company' => $settings['backend']['dbname']
                      );
     // Build Http query using params
@@ -824,10 +864,10 @@ class PhcFxWoocommerce {
         $this->writeFileLog('setCommunicationFx3', $ch);
       } else if(empty($response)){
         $this->writeFileLog('setCommunicationFx3', 'EMPTY RESPONSE');
-        //$this->messagesError("Can't connect to webservice!! There's an empty response");
+        $this->messagesError("Can't connect to webservice!! There's an empty response");
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
         $this->writeFileLog('setCommunicationFx3', $response['messages'][0]['messageCodeLocale']);
-        //$this->messagesError(" obtain dropdown with type of invoices! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+        $this->messagesError(" obtain dropdown with type of invoices! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
       } else {
         //Create options of dropdownlist invoices
         $i = 0;
@@ -865,10 +905,10 @@ class PhcFxWoocommerce {
           $this->writeFileLog('setCommunicationFx4', $ch);
         } else if(empty($response)){
           $this->writeFileLog('setCommunicationFx4', 'EMPTY RESPONSE');
-          //$this->messagesError("Can't connect to webservice!! There's an empty response");
+          $this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
           $this->writeFileLog('setCommunicationFx4', $response['messages'][0]['messageCodeLocale']);
-          //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+          $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
 
           $i = 0;
@@ -915,10 +955,10 @@ class PhcFxWoocommerce {
                   $this->writeFileLog('setCommunicationFx5', $ch);
                 } else if(empty($response)){
                   $this->writeFileLog('setCommunicationFx5', 'EMPTY RESPONSE');
-                  //$this->messagesError("Can't connect to webservice!! There's an empty response");
+                  $this->messagesError("Can't connect to webservice!! There's an empty response");
                 } else if(isset($response['messages'][0]['messageCodeLocale'])){
                   $this->writeFileLog('setCommunicationFx5', $response2['messages'][0]['messageCodeLocale']);
-                  //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response2['messages'][0]['messageCodeLocale']);
+                  $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response2['messages'][0]['messageCodeLocale']);
                 } else {
                   //Put the same number of order in PHC FX
                   global $wpdb;
@@ -961,10 +1001,10 @@ class PhcFxWoocommerce {
           $this->writeFileLog('setCommunicationFx6', $ch);
         } else if(empty($response)){
           $this->writeFileLog('setCommunicationFx6', 'EMPTY RESPONSE');
-          //$this->messagesError("Can't connect to webservice!! There's an empty response");
+          $this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
           $this->writeFileLog('setCommunicationFx6', $response['messages'][0]['messageCodeLocale']);
-          //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+          $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
           $i = 0;
           $count = count($response['result']);
@@ -1004,10 +1044,10 @@ class PhcFxWoocommerce {
           $this->writeFileLog('setCommunicationFx7', $ch);
         } else if(empty($response)){
           $this->writeFileLog('setCommunicationFx7', 'EMPTY RESPONSE');
-          //$this->messagesError("Can't connect to webservice!! There's an empty response");
+          $this->messagesError("Can't connect to webservice!! There's an empty response");
         } else if(isset($response['messages'][0]['messageCodeLocale'])){
           $this->writeFileLog('setCommunicationFx7', $response['messages'][0]['messageCodeLocale']);
-          //$this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
+          $this->messagesError(" obtain dropdown with type of documents! Message from Backend: " . $response['messages'][0]['messageCodeLocale']);
         } else {
           $i = 0;
           $count = count($response['result']);
@@ -1075,7 +1115,7 @@ class PhcFxWoocommerce {
           }
         }
       }
-      //Obtain type invoices
+      //Obtain currency coin of company
       $this->paramsQuery('E1ws', 'estab', 0);
       curl_setopt($ch, CURLOPT_URL, $this->url);
       curl_setopt($ch, CURLOPT_POST, false);
@@ -1085,14 +1125,14 @@ class PhcFxWoocommerce {
       $response = json_decode($response, true);
 
       if (curl_error($ch)) {
-        $this->writeFileLog('saveFieldOrderStatus9', $ch);
+        $this->writeFileLog('setCommunicationFx9', $ch);
       } else if(empty($response)){
-        $this->writeFileLog('saveFieldOrderStatus9', 'EMPTY RESPONSE');
+        $this->writeFileLog('setCommunicationFx9', 'EMPTY RESPONSE');
       } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('saveFieldOrderStatus9', $response['messages'][0]['messageCodeLocale']);
+        $this->writeFileLog('setCommunicationFx9', $response['messages'][0]['messageCodeLocale']);
       } else {
         if($response['result'][0]['moeda'] != get_option('woocommerce_currency')){
-          $this->messagesError(": Please configure currency in shop according to PHC FX");
+          $this->messagesInformation("Please configure currency in shop according to PHC FX");
           unset($_SESSION['username']);
         }
       }
@@ -2329,7 +2369,8 @@ class PhcFxWoocommerce {
           }
         } else {
           //Show message with error in Wordpress
-          $this->messagesError(": Please configure currency in shop according to PHC FX");
+          $this->messagesInformation("Please configure currency in shop according to PHC FX");
+          $this->writeFileLog('coin', 'Please configure currency in shop according to PHC FX');    
           unset($_SESSION['username']);
         }
       }
