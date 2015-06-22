@@ -31,8 +31,13 @@
           </th>
           <td>
             <input class="regular-text" id="url" type="text" name="phcfx-woocommerce[backend][url]" value="<?php echo $settings['backend']['url'] ?>">
-            <div id="backend_url_initialize" class="button button-primary" title="Initialize plugin">
-              <img id="plus" src="<?php echo plugins_url('/../images/plus.png', __FILE__) ?>" title="Initialize plugin"> Initialize plugin
+            <div id="backend_url_initialize" class="button button-primary" title="Autenticate plugin">
+              <img id="plus" src="<?php echo plugins_url('/../images/plus.png', __FILE__) ?>" title="Autenticate plugin"> 
+              <?php if($resultDB->meta_value != ''){ ?>
+                <span id="autenticatePlugin">Re-Autenticate</span>
+              <?php } else { ?>
+                <span id="autenticatePlugin">Autenticate</span>
+              <?php } ?>
             </div>
             <p class="description">The URL of your PHC FX application.<br>Something like, e.g. https://myurl.com/myphc</p>
           </td>

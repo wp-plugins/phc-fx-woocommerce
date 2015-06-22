@@ -3752,10 +3752,10 @@ class PhcFxWoocommerce {
 
     //Save image
     //$thumb_url = 'http://phc201412002/trunk/PHCWS/cimagem.aspx?recstamp=39a-46fd-9c11-65535491a17&oritable=ST&uniqueid=imagem&filename=Clientes%201&iflstamp=a3c-43a2-837e-26cabf7160a';
-    //$thumb_url = str_replace(" ", "%20", $thumb_url);
+    $thumb_url = str_replace(" ", "%20", $thumb_url);
 
     //echo $thumb_url;
-    /*$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
+    $tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
     $img = file_get_contents($thumb_url);
     file_put_contents($tmp, $img);
     
@@ -3767,7 +3767,19 @@ class PhcFxWoocommerce {
     if ( is_wp_error( $tmp ) ) {
       @unlink($file_array['tmp_name']);
       $file_array['tmp_name'] = '';
-    }*/
+    }
+
+    //use media_handle_sideload to upload img:
+    $thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
+
+    // If error storing permanently, unlink
+    if ( is_wp_error($thumbid) ) {
+      @unlink($file_array['tmp_name']);
+    }
+
+    set_post_thumbnail($new_post_id, $thumbid);
+
+    update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);
     /*$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE.jpg");
 
     $in = fopen($thumb_url, "rb");
@@ -4103,7 +4115,7 @@ class PhcFxWoocommerce {
 		                                                         "&uniqueid=".$response['result'][$i]['imagem']['uniqueid'].
 		                                                         "&filename=".$response['result'][$i]['imagem']['imageName'].
 		                                                         "&iflstamp=".$response['result'][$i]['imagem']['iflstamp'].
-                                                             "&imageExtension=.jpg";
+                                                             "&imageExtension=jpg";
                   //Add Product
 	              	$this->addProduct($response['result'][$i]['design'], 
 	                         $response['result'][$i]['design'], 

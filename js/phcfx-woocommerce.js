@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 	//Initialize plugin
 	jQuery('#backend_url_initialize').click(function (){
 	  //Open popup
-	  window.open("http://phc201412002/trunk/OAuthCallBack/oauth2callback_phcfx.aspx?backendUrl="+jQuery('#url').val()+"&redirectUri="+window.location.href, "yyyyy", "width=580,height=550,resizable=no,toolbar=no,menubar=no,location=no,status=no");
+	  window.open("http://phc201412002/trunk/OAuthCallBack/oauth2callback_phcfx.aspx?backendUrl="+jQuery('#url').val()+"&appName=PHC FX Woocommerce&redirectUri="+window.location.href, "yyyyy", "width=580,height=550,resizable=no,toolbar=no,menubar=no,location=no,status=no");
 	  return false;
 	});
 
