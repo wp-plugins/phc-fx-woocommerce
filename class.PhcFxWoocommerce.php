@@ -88,7 +88,7 @@ class PhcFxWoocommerce {
     }  
 
     // handler for form submission
-    add_action('admin_post_woocommerce_fx', array($this, 'woocommerce_fx'));
+    add_action('admin_post_woocommerce_fx', array($this, 'woocommerce_fx')); 
 
     //Verify if exists token in mysql db
     global $wpdb;
@@ -98,6 +98,8 @@ class PhcFxWoocommerce {
     $accessToken = filter_var($_GET['accessToken'], FILTER_SANITIZE_STRING);
     
     if($accessToken != ''){
+      $accessToken = str_replace(' ', '+', $accessToken);
+
       //Save token in Mysql db
       $query = "SELECT * FROM %s WHERE meta_key = %s";
       $resultDB = $wpdb->get_row(str_replace("'".$table_name."'", $table_name, $wpdb->prepare($query, $table_name, '_token')));
@@ -454,8 +456,7 @@ class PhcFxWoocommerce {
     // Create map with request parameters
     $this->params = array ('userCode' => $settings['backend']['username'], 
                      'password' => $settings['backend']['password'], 
-                     //'applicationType' => $resultDB->meta_value,
-                     'applicationType' => 'HYU45F-FKEIDD-K93DUJ-ALRNJD',
+                     'applicationType' => $resultDB->meta_value,
                      'company' => $settings['backend']['dbname']
                      );
     // Build Http query using params
@@ -3751,7 +3752,6 @@ class PhcFxWoocommerce {
     }
 
     //Save image
-    //$thumb_url = 'http://phc201412002/trunk/PHCWS/cimagem.aspx?recstamp=39a-46fd-9c11-65535491a17&oritable=ST&uniqueid=imagem&filename=Clientes%201&iflstamp=a3c-43a2-837e-26cabf7160a';
     $thumb_url = str_replace(" ", "%20", $thumb_url);
 
     //echo $thumb_url;
