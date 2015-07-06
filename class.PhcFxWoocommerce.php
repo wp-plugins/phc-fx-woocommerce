@@ -103,10 +103,16 @@ class PhcFxWoocommerce {
       //Save token in Mysql db
       $query = "SELECT * FROM %s WHERE meta_key = %s";
       $resultDB = $wpdb->get_row(str_replace("'".$table_name."'", $table_name, $wpdb->prepare($query, $table_name, '_token')));
+	  
       //Verify if token already exists
       if($resultDB->meta_id != ''){
-        //Update value in database mysql
-        update_post_meta($resultDB->meta_id, '_token', $accessToken);      
+        //Delete value in database mysql
+        delete_post_meta($resultDB->post_id, '_token');  
+		//Obtain next post_id of order in MySQL
+        $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
+        $token = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
+        //add to table postmeta a key of order and stamp of internal document
+        add_post_meta($token->nextPostId, '_token', $accessToken);		
       } else {
         //Obtain next post_id of order in MySQL
         $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
@@ -2052,13 +2058,17 @@ class PhcFxWoocommerce {
                           //Insert
                           $response['result'][0]['Operation'] = 1;
 
-    					            //Put the same number of order in PHC FX
+    					  //Put the same number of order in PHC FX
                           global $wpdb;
                           $table_name = $wpdb->prefix."postmeta";
                           //Obtain next post_id of order in MySQL
                           $query = "SELECT MAX(post_id) as nextPostId FROM %s";
                           $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
                           $response['result'][0]['obrano'] = $docid->nextPostId;
+						  
+						  echo "<pre>";
+						  print_r($response);
+						  echo "</pre>";
 
                           //Save internal document
                           $this->paramsSave('BoWS', $response);
@@ -3752,34 +3762,38 @@ class PhcFxWoocommerce {
     }
 
     //Save image
-    $thumb_url = str_replace(" ", "%20", $thumb_url);
+	try {
+		$thumb_url = str_replace(" ", "%20", $thumb_url);
 
-    //echo $thumb_url;
-    $tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
-    $img = file_get_contents($thumb_url);
-    file_put_contents($tmp, $img);
-    
-    preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
-    $file_array['name'] = basename($matches[0]);
-    $file_array['tmp_name'] = $tmp;
-    
-    // If error storing temporarily, unlink
-    if ( is_wp_error( $tmp ) ) {
-      @unlink($file_array['tmp_name']);
-      $file_array['tmp_name'] = '';
-    }
+		//echo $thumb_url;
+		$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
+		$img = file_get_contents($thumb_url);
+		file_put_contents($tmp, $img);
+		
+		preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
+		$file_array['name'] = basename($matches[0]);
+		$file_array['tmp_name'] = $tmp;
+		
+		// If error storing temporarily, unlink
+		if ( is_wp_error( $tmp ) ) {
+		  @unlink($file_array['tmp_name']);
+		  $file_array['tmp_name'] = '';
+		}
 
-    //use media_handle_sideload to upload img:
-    $thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
+		//use media_handle_sideload to upload img:
+		$thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
 
-    // If error storing permanently, unlink
-    if ( is_wp_error($thumbid) ) {
-      @unlink($file_array['tmp_name']);
-    }
+		// If error storing permanently, unlink
+		if ( is_wp_error($thumbid) ) {
+		  @unlink($file_array['tmp_name']);
+		}
 
-    set_post_thumbnail($new_post_id, $thumbid);
+		set_post_thumbnail($new_post_id, $thumbid);
 
-    update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);
+		update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);
+	} catch (Exception $e) {
+		$this->writeFileLog('Image Product', ' ');
+	}
     /*$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE.jpg");
 
     $in = fopen($thumb_url, "rb");
@@ -3903,6 +3917,8 @@ class PhcFxWoocommerce {
   			$response = curl_exec($ch);
   			// send response as JSON
   			$response = json_decode($response, true);   
+			
+		
 
   			if (curl_error($ch)) {
   			  $this->writeFileLog('listProducts3', $ch);
@@ -3978,9 +3994,9 @@ class PhcFxWoocommerce {
                 		$tableProducts .= "<td style='text-align: left;'>".$response['result'][$key]['ref'].   "</td><td style='text-align: left;'>".$response['result'][$key]['design']."</td><td style='text-align: left;'>".
                                              $response['result'][$key]['familia']."</td>";
 		                if($response['result'][$key]['stock'] < 0){
-		                  $tableProducts .= "<td style='text-align: right; color: red;'>".$arrayRef[$response['result'][$key]['stock']]."</td></tr>";
+		                  $tableProducts .= "<td style='text-align: right; color: red;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
 		                } else {
-		                  $tableProducts .= "<td style='text-align: right;'>".$arrayRef[$response['result'][$key]['stock']]."</td></tr>";
+		                  $tableProducts .= "<td style='text-align: right;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
 		                }
               		}
 		            }

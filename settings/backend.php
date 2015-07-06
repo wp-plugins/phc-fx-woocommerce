@@ -55,7 +55,7 @@
       $value = '';
     }
 
-    if($resultDB->meta_value != ''){
+    if($resultDB->meta_value != '' && $resultDB->meta_value != 'error'){
       $showErrorsLogin = true;
       switch ($id) {
         case 'username':

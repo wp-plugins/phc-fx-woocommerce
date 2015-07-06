@@ -5,7 +5,7 @@ jQuery(document).ready(function() {
 	//Initialize plugin
 	jQuery('#backend_url_initialize').click(function (){
 	  //Open popup
-	  window.open("https://trial.phcfx.com/OauthCallback/oauth2callback_phcfx.aspx?backendUrl="+jQuery('#url').val()+"&appName=PHC FX Woocommerce&redirectUri="+window.location.href, "yyyyy", "width=580,height=550,resizable=no,toolbar=no,menubar=no,location=no,status=no");
+	  window.open("https://trial.phcfx.com/OauthCallback/oauth2callback_phcfx.aspx?backendUrl="+jQuery('#url').val()+"&appName=PHC FX Woocommerce&redirectUri="+window.location.href, "yyyyy", "width=580,height=550,resizable=no,toolbar=no,menubar=no,location=no,status=no");	  
 	  return false;
 	});
 
@@ -148,8 +148,12 @@ jQuery(document).ready(function() {
 	  	})
 	  	.done(function (data) {
 	        jQuery('.alignleft #messageSuccess').html('');
-
-	        jQuery('.alignleft h2').before('<div id="messageSuccess"><div class="error"><p><strong>Please fill description of products to import them successfully: '+data+'</strong></p></div></div>');
+			
+			alert(data.length);
+			if(data.length != 0){
+				jQuery('.alignleft h2').before('<div id="messageSuccess"><div class="error"><p><strong>Please fill description of products to import them successfully: '+data+'</strong></p></div></div>');
+			}
+			
 	        jQuery('.alignleft h2').before('<div id="messageSuccess"><div id="setting-error-settings_updated" class="updated settings-error"><p><strong>Import successfull</strong></p></div></div>');
 	        
 	        jQuery('#saveProductInShop').show();
