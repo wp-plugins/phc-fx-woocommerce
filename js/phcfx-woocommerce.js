@@ -46,6 +46,15 @@ jQuery(document).ready(function() {
 			break;
 	} 
 
+	jQuery.post(url, {
+  		action: 'woocommerce_fx',
+  		method: 'updateTypeOfOrder'
+  	})
+  	.done(function (data) {
+  		console.log(data);
+  		jQuery('#typeOfOrder').html(data);
+	})
+
   	//When is changed dropdownlist, input is changed
   	jQuery('#statusOfOrder').on('change', function (event) {
   		// stop normal form submission handler
@@ -54,9 +63,56 @@ jQuery(document).ready(function() {
 	  	jQuery.post(url, {
 	  		action: 'woocommerce_fx',
 	  		method: 'statusOfOrder',
-	  		selectItems: jQuery('#statusOfOrder').val() 
+	  		selectItems: jQuery('#statusOfOrder').val(), 
+	  		typeOfOrder: jQuery('#typeOfOrder').val() 
 	  	})
 	  	.done(function (data) {
+	    	jQuery('#saveStatusOrder').val(data.replace(/"/g, ""));
+	    })
+
+	  	//Define max size of inputs
+	    switch(jQuery('#statusOfOrder').val()) {
+			case 'nmdesc':
+		    	jQuery("#saveStatusOrder").prop('maxlength',20);
+		    	break;
+			case 'texto1':
+		    	jQuery("#saveStatusOrder").prop('maxlength',67);
+		    	break;
+		    case 'texto2':
+		    	jQuery("#saveStatusOrder").prop('maxlength',67);
+		    	break;
+			case 'texto3':
+		    	jQuery("#saveStatusOrder").prop('maxlength',67);
+		    	break;
+		    case 'tmodelo':
+		    	jQuery("#saveStatusOrder").prop('maxlength',12);
+		    	break;
+			case 'tmarca':
+		    	jQuery("#saveStatusOrder").prop('maxlength',12);
+		    	break;
+		    case 'tserie':
+		    	jQuery("#saveStatusOrder").prop('maxlength',50);
+		    	break;
+			default:
+				break;
+		} 
+  	});
+
+	//When is changed dropdownlist, input is changed
+  	jQuery('#typeOfOrder').on('change', function (event) {
+  		// stop normal form submission handler
+    	event.preventDefault();
+
+	  	jQuery.post(url, {
+	  		action: 'woocommerce_fx',
+	  		method: 'statusOfOrder',
+	  		selectItems: jQuery('#statusOfOrder').val(), 
+	  		typeOfOrder: jQuery('#typeOfOrder').val()  
+	  	})
+	  	.done(function (data) {
+	  		console.log(jQuery('#statusOfOrder').val());
+	  		console.log(data);
+	  		//jQuery('#saveStatusOrder').val('');
 	    	jQuery('#saveStatusOrder').val(data.replace(/"/g, ""));
 	    })
 
@@ -149,7 +205,6 @@ jQuery(document).ready(function() {
 	  	.done(function (data) {
 	        jQuery('.alignleft #messageSuccess').html('');
 			
-			alert(data.length);
 			if(data.length != 0){
 				jQuery('.alignleft h2').before('<div id="messageSuccess"><div class="error"><p><strong>Please fill description of products to import them successfully: '+data+'</strong></p></div></div>');
 			}

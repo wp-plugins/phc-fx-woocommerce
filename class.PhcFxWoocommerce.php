@@ -83,7 +83,7 @@ class PhcFxWoocommerce {
 
     //Save field to show status order in PHC FX
     $settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
-    if(!empty($settings['backend']['typeOfOrder']) && !empty($settings['backend']['statusOfOrder'])){
+    if(!empty($settings['backend']['typeOfOrder'])){
       add_action('update_option',  array($this, 'saveFieldOrderStatus'));
     }  
 
@@ -117,8 +117,12 @@ class PhcFxWoocommerce {
         //Obtain next post_id of order in MySQL
         $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
         $token = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
-        //add to table postmeta a key of order and stamp of internal document
-        add_post_meta($token->nextPostId, '_token', $accessToken);
+        if($token->nextPostId == ''){
+			add_post_meta(1, '_token', $accessToken);
+		} else {
+			//add to table postmeta a key of order and stamp of internal document
+			add_post_meta($token->nextPostId, '_token', $accessToken);
+		}
       }
 
       //Close popup and refresh parent page
@@ -278,6 +282,12 @@ class PhcFxWoocommerce {
   		$selectItems = '';
   	}
 
+  	if(isset($_POST['typeOfOrder'])){
+  		$typeOfOrder = filter_var($_POST['typeOfOrder'], FILTER_SANITIZE_STRING); 
+  	} else {
+  		$typeOfOrder = '';
+  	}
+
   	if(isset($_POST['nameTypeOfOrder'])){
   		$nameTypeOfOrder = filter_var($_POST['nameTypeOfOrder'], FILTER_SANITIZE_STRING); 
   	} else {
@@ -315,7 +325,7 @@ class PhcFxWoocommerce {
   			break;	
   		case 'statusOfOrder':
         //Obtain status of order presented in PHC FX
-  			return $this->statusOfOrder($selectItems);
+  			return $this->statusOfOrder($selectItems, $typeOfOrder);
   			break;
   		case 'newTypeOfOrder':
         //Create new type of order in PHC FX
@@ -552,7 +562,7 @@ class PhcFxWoocommerce {
                                             "filterItems":[{
                                                             "comparison":0,
                                                             "filterItem":"ndos",
-                                                            "valueItem":'.$settings['backend']['typeOfOrder'].',
+                                                            "valueItem":'.$valueItem.',
                                                             "groupItem":1,
                                                             "checkNull":false,
                                                             "skipCheckType":false,
@@ -971,7 +981,7 @@ class PhcFxWoocommerce {
                   global $wpdb;
                   $table_name = $wpdb->prefix."postmeta";
                   //Obtain next post_id of order in MySQL
-                  $query = "SELECT MAX(post_id) as nextPostId FROM %s";
+                  $query = "SELECT MAX(post_id)+1 as nextPostId FROM %s";
                   $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
            
                   if(($response2['result'][0]['obrano'] == '' || $response2['result'][0]['obrano'] <= $docid->nextPostId) && $response['result'][$i]['bdempresas'] == 'CL' && $businessProduct == true){
@@ -1279,7 +1289,7 @@ class PhcFxWoocommerce {
   }
 
   //Obtain value of field to PHC FX
-  public function statusOfOrder($selectItems){
+  public function statusOfOrder($selectItems, $typeOfOrder){
   	$settings = get_option(PHCFXWOOCOMMERCE_PLUGIN_NAME);
     //Obtain configuration to make login
     $this->paramsLogin();
@@ -1308,7 +1318,7 @@ class PhcFxWoocommerce {
       $this->writeFileLog('statusOfOrder', $response['messages'][0]['messageCodeLocale']);
     } else {
     	//Obtain type invoices
-	    $this->paramsQuery4('TsWS', $selectItems, $settings['backend']['typeOfOrder']);
+	    $this->paramsQuery4('TsWS', $selectItems, $typeOfOrder);
 
 	    curl_setopt($ch, CURLOPT_URL, $this->url);
 	    curl_setopt($ch, CURLOPT_POST, false);
@@ -1369,8 +1379,10 @@ class PhcFxWoocommerce {
       //Save data of login to show in backend.php the other fields (type of invoice and type of order)
       $_SESSION['username'] = $response['result'][0]['username'];
 
+      $sanitizeTypeOfOrder = sanitize_text_field( $_POST['phcfx-woocommerce']['backend']['typeOfOrder'] );
+
       //Obtain type invoices
-      $this->paramsQuery('TsWS', 'ndos', $settings['backend']['typeOfOrder']);
+      $this->paramsQuery('TsWS', 'ndos', $sanitizeTypeOfOrder);
 
       curl_setopt($ch, CURLOPT_URL, $this->url);
       curl_setopt($ch, CURLOPT_POST, false);
@@ -2066,10 +2078,6 @@ class PhcFxWoocommerce {
                           $docid = $wpdb->get_row(str_replace("'", "", $wpdb->prepare($query, $table_name)));
                           $response['result'][0]['obrano'] = $docid->nextPostId;
 						  
-						  echo "<pre>";
-						  print_r($response);
-						  echo "</pre>";
-
                           //Save internal document
                           $this->paramsSave('BoWS', $response);
                           curl_setopt($ch, CURLOPT_URL, $this->url);
@@ -3794,41 +3802,6 @@ class PhcFxWoocommerce {
 	} catch (Exception $e) {
 		$this->writeFileLog('Image Product', ' ');
 	}
-    /*$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE.jpg");
-
-    $in = fopen($thumb_url, "rb");
-    $out = fopen($tmp, "wb");
-                
-    while ($chunk = fread($in,8192)){
-      fwrite($out, $chunk, 8192);
-    }
-
-    fclose($in);
-    fclose($out);
-
-    preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
-    $file_array['name'] = 'image.jpg';
-    $file_array['tmp_name'] = $tmp;
-    
-    // If error storing temporarily, unlink
-    if ( is_wp_error( $tmp ) ) {
-      @unlink($file_array['tmp_name']);
-      $file_array['tmp_name'] = '';
-    }
-
-    //use media_handle_sideload to upload img:
-    $thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
-
-    // If error storing permanently, unlink
-    if ( is_wp_error($thumbid) ) {
-      @unlink($file_array['tmp_name']);
-    }
-
-    set_post_thumbnail($new_post_id, $thumbid);
-
-    update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);*/
-
-    //unlink($file_loc);
   }
 
   //Show list of products
@@ -3861,53 +3834,52 @@ class PhcFxWoocommerce {
       $this->writeFileLog('listProducts', $response['messages'][0]['messageCodeLocale']);
       unset($_SESSION['username']);
     } else {       
-      //Configured "All warehouses" in product settings  
+      	//Configured "All warehouses" in product settings  
   		if($settings['backend']['warehouse'] == -1){
-  			$this->paramsQuery2('SaWS');
+  			$this->paramsQuery2('StWS');
   		} else {
   			$this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
   		}
 
-      curl_setopt($ch, CURLOPT_URL, $this->url);
-      curl_setopt($ch, CURLOPT_POST, false);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-      $response = curl_exec($ch);
-      // send response as JSON
-      $response = json_decode($response, true);  
+	    curl_setopt($ch, CURLOPT_URL, $this->url);
+	    curl_setopt($ch, CURLOPT_POST, false);
+	    curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+	    $response = curl_exec($ch);
+	    // send response as JSON
+	    $response = json_decode($response, true);  
 
-      if (curl_error($ch)) {
-        $this->writeFileLog('listProducts2', $ch);
-      } else if(empty($response)){
-        $this->writeFileLog('listProducts2', 'EMPTY RESPONSE');        
-      } else if(isset($response['messages'][0]['messageCodeLocale'])){
-        $this->writeFileLog('listProducts2', $response['messages'][0]['messageCodeLocale']);        
-      } else {
-			 	$i = 0;
-				$count = count($response['result']);
-				$refArray = '';
-				while ($i < $count) {
+	    if (curl_error($ch)) {
+	    	$this->writeFileLog('listProducts2', $ch);
+	    } else if(empty($response)){
+	    	$this->writeFileLog('listProducts2', 'EMPTY RESPONSE');        
+	    } else if(isset($response['messages'][0]['messageCodeLocale'])){
+	    	$this->writeFileLog('listProducts2', $response['messages'][0]['messageCodeLocale']);        
+	    } else {			
+
+		 	$i = 0;
+			$count = count($response['result']);
+			$refArray = '';
+			while ($i < $count) {
 			    foreach ($response['result'][$i] as $key => $value){
-        		if($key == "ref"){
-           		if($i > 0){
-            			$refArray .= ",";
-          		}
-              $arrayRef[$value] = $tmpValueRef;
-              
-          		$refArray .= '{
-                  		        "comparison":0,
-                          		"filterItem":"ref",
-  		                        "valueItem":"'.$value.'",
-  		                        "groupItem":9,
-  		                        "checkNull":false,
-  		                        "skipCheckType":false,
-  		                        "type":"Number"
-  		                      }';				                                                       
-        		} else if($key == "stock") {
-              $tmpValueRef = $value;
-            }
-    	    }
-    	    ++$i;
-  	    }
+					if($key == "ref"){
+				   		if($i > 0){
+				    		$refArray .= ",";
+				  		}
+				        $arrayRef[$value] = $response['result'][$i]['stock'];
+				          
+				      	$refArray .= '{
+				           		        "comparison":0,
+				                   		"filterItem":"ref",
+						                "valueItem":"'.$value.'",
+						                "groupItem":9,
+						                "checkNull":false,
+						                "skipCheckType":false,
+						                "type":"Number"
+						              }';				                                                       
+			    	}
+	    		}
+	    		++$i;
+  	    	} 	    		
 
   			// build our web service full URL
   			$this->paramsQuery3('StWS', $refArray);
@@ -3916,9 +3888,7 @@ class PhcFxWoocommerce {
   			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
   			$response = curl_exec($ch);
   			// send response as JSON
-  			$response = json_decode($response, true);   
-			
-		
+  			$response = json_decode($response, true);   	 			
 
   			if (curl_error($ch)) {
   			  $this->writeFileLog('listProducts3', $ch);
@@ -3952,54 +3922,55 @@ class PhcFxWoocommerce {
 
 	      	if(is_array($response['result'])){
 	        	if(!empty($settings['backend']['productPriceColumn']) && $settings['backend']['productPriceColumn'] != 'epv0'){
-		          foreach ($response['result'] as $key => $value) {
-								$woocommerce_calc_taxes = get_option('woocommerce_calc_taxes');
-								$woocommerce_prices_include_tax = get_option('woocommerce_prices_include_tax');
+		          	foreach ($response['result'] as $key => $value) {
+						$woocommerce_calc_taxes = get_option('woocommerce_calc_taxes');
+						$woocommerce_prices_include_tax = get_option('woocommerce_prices_include_tax');
 
-                //Configured in tax tab of woocommerce
-	            	if(($woocommerce_calc_taxes == "no") || ($woocommerce_calc_taxes == "yes" && $woocommerce_prices_include_tax == "yes")) {
-		              	if($response['result'][$key][$columnIva] == 1){
-		                	$tableProducts .= "<tr>";
-		                	if(wc_get_product_id_by_sku( $response['result'][$key]['ref'] )== ""){
-                          if($arrayRef[$response['result'][$key]['ref']] < 0){
-		                    		$tableProducts .= "<td style='text-align: left;'><input type='checkbox' disabled name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
-		                  		} else {
-		                    		$tableProducts .= "<td style='text-align: left;'><input type='checkbox' name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
-		                  		}
-		                	} else {
-		                 	   $tableProducts .= "<td style='text-align: left;'><div class='updateStockShop' id='".$response['result'][$key]['ref']."'><img src='".plugins_url('/images/right.png', __FILE__)."' alt='' width='16' height='16'></div></td>";
-		                	}
+	                	//Configured in tax tab of woocommerce
+		            	if(($woocommerce_calc_taxes == "no") || ($woocommerce_calc_taxes == "yes" && $woocommerce_prices_include_tax == "yes")) {
+			              	if($response['result'][$key][$columnIva] == 1){
+			                	$tableProducts .= "<tr>";
+	                			if(wc_get_product_id_by_sku( $response['result'][$key]['ref'] )== ""){
+                      				if($arrayRef[$response['result'][$key]['ref']] < 0){
+	                    				$tableProducts .= "<td style='text-align: left;'><input type='checkbox' disabled name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
+	                  				} else {
+	                    				$tableProducts .= "<td style='text-align: left;'><input type='checkbox' name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
+	                  				}
+	                			} else {
+	                 	   			$tableProducts .= "<td style='text-align: left;'><div class='updateStockShop' id='".$response['result'][$key]['ref']."'><img src='".plugins_url('/images/right.png', __FILE__)."' alt='' width='16' height='16'></div></td>";
+	                			}
 
-		                	$tableProducts .= "<td style='text-align: left;'>".$response['result'][$key]['ref'].   "</td><td style='text-align: left;'>".$response['result'][$key]['design']."</td><td style='text-align: left;'>".
-		                                             $response['result'][$key]['familia']."</td>";
-			                if($response['result'][$key]['stock'] < 0){
-			                  $tableProducts .= "<td style='text-align: right; color: red;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
-			                } else {
-			                  $tableProducts .= "<td style='text-align: right;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
-			                }
-		              	}
-	            	} else if($woocommerce_calc_taxes == "yes" && $woocommerce_prices_include_tax == 'no'){
-              		if($response['result'][$key][$columnIva] == 0){
-                		$tableProducts .= "<tr>";
-                		if(wc_get_product_id_by_sku( $response['result'][$key]['ref'] )== ""){
-                  			if($arrayRef[$response['result'][$key]['ref']] < 0){
-                    			$tableProducts .= "<td style='text-align: left;'><input type='checkbox' disabled name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
-                  			} else {
-                    			$tableProducts .= "<td style='text-align: left;'><input type='checkbox' name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
-                  			}
-                		} else {
-                   			$tableProducts .= "<td style='text-align: left;'><div class='updateStockShop' id='".$response['result'][$key]['ref']."'><img src='".plugins_url('/images/right.png', __FILE__)."' alt='' width='16' height='16'></div></td>";
-                		}
+	                			$tableProducts .= "<td style='text-align: left;'>". $response['result'][$key]['ref'].   
+	                							  "</td><td style='text-align: left;'>". $response['result'][$key]['design'].
+	                							  "</td><td style='text-align: left;'>". $response['result'][$key]['familia']."</td>";
+		                		if($response['result'][$key]['stock'] < 0){
+		                  			$tableProducts .= "<td style='text-align: right; color: red;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
+		                		} else {
+		                  			$tableProducts .= "<td style='text-align: right;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
+		                		}
+		              		}
+		            	} else if($woocommerce_calc_taxes == "yes" && $woocommerce_prices_include_tax == 'no'){
+							if($response['result'][$key][$columnIva] == 0){
+								$tableProducts .= "<tr>";
+								if(wc_get_product_id_by_sku( $response['result'][$key]['ref'] )== ""){
+									if($arrayRef[$response['result'][$key]['ref']] < 0){
+										$tableProducts .= "<td style='text-align: left;'><input type='checkbox' disabled name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
+									} else {
+										$tableProducts .= "<td style='text-align: left;'><input type='checkbox' name='checkboxes' value='".$response['result'][$key]['ref']."'></td>";
+									}
+								} else {
+									$tableProducts .= "<td style='text-align: left;'><div class='updateStockShop' id='".$response['result'][$key]['ref']."'><img src='".plugins_url('/images/right.png', __FILE__)."' alt='' width='16' height='16'></div></td>";
+								}
 
-                		$tableProducts .= "<td style='text-align: left;'>".$response['result'][$key]['ref'].   "</td><td style='text-align: left;'>".$response['result'][$key]['design']."</td><td style='text-align: left;'>".
-                                             $response['result'][$key]['familia']."</td>";
-		                if($response['result'][$key]['stock'] < 0){
-		                  $tableProducts .= "<td style='text-align: right; color: red;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
-		                } else {
-		                  $tableProducts .= "<td style='text-align: right;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
-		                }
-              		}
-		            }
+								$tableProducts .= "<td style='text-align: left;'>".$response['result'][$key]['ref'].   "</td><td style='text-align: left;'>".$response['result'][$key]['design']."</td><td style='text-align: left;'>".
+													 $response['result'][$key]['familia']."</td>";
+								if($response['result'][$key]['stock'] < 0){
+								  $tableProducts .= "<td style='text-align: right; color: red;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
+								} else {
+								  $tableProducts .= "<td style='text-align: right;'>".$arrayRef[$response['result'][$key]['ref']]."</td></tr>";
+								}
+							}
+			            }
 		         	}
 					    echo $tableProducts;
 	        	} else {
@@ -4083,7 +4054,7 @@ class PhcFxWoocommerce {
                 if($i > 0){
                   $refArray .= ",";
                 }
-                $arrayRef[$value] = $tmpValueRef;
+                $arrayRef[$value] = $response['result'][$i]['stock'];
                 
                 $refArray .= '{
                                 "comparison":0,
@@ -4094,9 +4065,7 @@ class PhcFxWoocommerce {
                                 "skipCheckType":false,
                                 "type":"Number"
                               }';                                                              
-              } else if($key == "stock") {        
-                $tmpValueRef = $value;
-              }
+              } 
             }
           }
           ++$i;
