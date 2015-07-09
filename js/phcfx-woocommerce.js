@@ -1,7 +1,7 @@
 var debug_mode = false;
 
 jQuery(document).ready(function() {
-
+				
 	//Initialize plugin
 	jQuery('#backend_url_initialize').click(function (){
 	  //Open popup
@@ -14,7 +14,12 @@ jQuery(document).ready(function() {
   	} else {
 		jQuery('#addNewTypeOrderMessage').html('New type of Order was added in PHC FX');
   	}
-  
+	
+	if(jQuery('#typeOfOrder').val() == 0){
+		jQuery('#statusOfOrder').parent('td').parent('tr').hide();
+		jQuery('#saveStatusOrder').parent('td').parent('tr').hide();
+	}
+	
 	jQuery('#updateStocks').hide();
 	jQuery('#saveProductInShop').hide();
 	jQuery('#updateStocks').hide();
@@ -51,8 +56,8 @@ jQuery(document).ready(function() {
   		method: 'updateTypeOfOrder'
   	})
   	.done(function (data) {
-  		console.log(data);
-  		jQuery('#typeOfOrder').html(data);
+  		jQuery('#typeOfOrder').html("<option value='0'>Select one...</option>");
+		jQuery('#typeOfOrder').append(data);
 	})
 
   	//When is changed dropdownlist, input is changed
@@ -141,7 +146,14 @@ jQuery(document).ready(function() {
 		    	break;
 			default:
 				break;
-		} 
+		}
+		if(jQuery('#typeOfOrder').val() != 0){
+			jQuery('#statusOfOrder').parent('td').parent('tr').show();
+			jQuery('#saveStatusOrder').parent('td').parent('tr').show();
+		} else {
+			jQuery('#statusOfOrder').parent('td').parent('tr').hide();
+			jQuery('#saveStatusOrder').parent('td').parent('tr').hide();
+		}
   	});
 	
 	//Run to show list of products
@@ -393,7 +405,8 @@ jQuery(document).ready(function() {
 		  		method: 'updateTypeOfOrder'
 		  	})
 		  	.done(function (data) {
-		  		jQuery('#typeOfOrder').html(data);
+		  		jQuery('#typeOfOrder').html("<option value='0'>Select one...</option>");
+				jQuery('#typeOfOrder').append(data);
 	    	})
 	    })
  	});

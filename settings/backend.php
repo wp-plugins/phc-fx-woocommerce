@@ -215,7 +215,8 @@
             </tr>
             <?php } break;
         case 'statusOfOrder':
-          if($_SESSION['username'] != '' && $settings['backend']['createInvoice'] != '' && ($settings['backend']['typeOfOrder'] != '' && $settings['backend']['typeOfOrder'] > 0)){ ?> 
+          //if($_SESSION['username'] != '' && $settings['backend']['createInvoice'] != '' && ($settings['backend']['typeOfOrder'] != '' && $settings['backend']['typeOfOrder'] > 0)){ 
+          if($_SESSION['username'] != '' && $settings['backend']['createInvoice'] != ''){ ?> 
           <tr>
             <th scope="row">
               <label for="<?php echo $id ?>"><?php echo $opts['label'] ?></label>
@@ -243,7 +244,8 @@
           </tr>
           <?php } break;
         case 'saveStatusOrder':
-          if($_SESSION['username'] != '' && $settings['backend']['createInvoice'] != '' && ($settings['backend']['typeOfOrder'] != '' && $settings['backend']['typeOfOrder'] > 0)){ ?> 
+          //if($_SESSION['username'] != '' && $settings['backend']['createInvoice'] != '' && ($settings['backend']['typeOfOrder'] != '' && $settings['backend']['typeOfOrder'] > 0)){ 
+          if($_SESSION['username'] != '' && $settings['backend']['createInvoice'] != ''){ ?> 
             <tr>
               <th scope="row">
                 <label for="<?php echo $id ?>"><?php echo $opts['label'] ?></label>
