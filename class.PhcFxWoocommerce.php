@@ -1689,6 +1689,7 @@ class PhcFxWoocommerce {
                     $response['result'][0]['email'] = $billing_email;
                     $response['result'][0]['morada'] = $billing_address_1;
                     $response['result'][0]['local'] = $billing_city;
+					$response['result'][0]['provincia'] = $billing_city;
                     $response['result'][0]['telefone'] = $billing_phone;
                     $response['result'][0]['codpost'] = $billing_postcode;
                   } else { //Used in backend
@@ -1696,6 +1697,7 @@ class PhcFxWoocommerce {
                     $response['result'][0]['email'] = $billing_email_;
                     $response['result'][0]['morada'] = $billing_address_1_;
                     $response['result'][0]['local'] = $billing_city_;
+					$response['result'][0]['provincia'] = $billing_city_;
                     $response['result'][0]['telefone'] = $billing_phone_;
                     $response['result'][0]['codpost'] = $billing_postcode_;
                   }
@@ -1770,6 +1772,7 @@ class PhcFxWoocommerce {
                       $response['result'][0]['email'] = $billing_email;
                       $response['result'][0]['morada'] = $billing_address_1;
                       $response['result'][0]['local'] = $billing_city;
+					  $response['result'][0]['provincia'] = $billing_city;
                       $response['result'][0]['telefone'] = $billing_phone;
                       $response['result'][0]['codpost'] = $billing_postcode;
                     } else { //Used in backend
@@ -1777,6 +1780,7 @@ class PhcFxWoocommerce {
                       $response['result'][0]['email'] = $billing_email_;
                       $response['result'][0]['morada'] = $billing_address_1_;
                       $response['result'][0]['local'] = $billing_city_;
+					  $response['result'][0]['provincia'] = $billing_city_;
                       $response['result'][0]['telefone'] = $billing_phone_;
                       $response['result'][0]['codpost'] = $billing_postcode_;
                     }
@@ -2058,11 +2062,13 @@ class PhcFxWoocommerce {
                           if($billing_email_ == ''){
                             $response['result'][0]['morada'] = $billing_address_1;
                             $response['result'][0]['local'] = $billing_city;
+							$response['result'][0]['provincia'] = $billing_city;
                             $response['result'][0]['telefone'] = $billing_phone;
                             $response['result'][0]['codpost'] = $billing_postcode;
                           } else { //Used in backend
                             $response['result'][0]['morada'] = $billing_address_1_;
                             $response['result'][0]['local'] = $billing_city_;
+							$response['result'][0]['provincia'] = $billing_city_;
                             $response['result'][0]['telefone'] = $billing_phone_;
                             $response['result'][0]['codpost'] = $billing_postcode_;
                           }
@@ -2184,6 +2190,7 @@ class PhcFxWoocommerce {
                       $response['result'][0]['email'] = $billing_email;
                       $response['result'][0]['morada'] = $billing_address_1;
                       $response['result'][0]['local'] = $billing_city;
+					  $response['result'][0]['provincia'] = $billing_city;
                       $response['result'][0]['telefone'] = $billing_phone;
                       $response['result'][0]['codpost'] = $billing_postcode;
                     } else { //Used in backend
@@ -2191,6 +2198,7 @@ class PhcFxWoocommerce {
                       $response['result'][0]['email'] = $billing_email_;
                       $response['result'][0]['morada'] = $billing_address_1_;
                       $response['result'][0]['local'] = $billing_city_;
+					  $response['result'][0]['provincia'] = $billing_city_;
                       $response['result'][0]['telefone'] = $billing_phone_;
                       $response['result'][0]['codpost'] = $billing_postcode_;
                     } 
@@ -2878,10 +2886,12 @@ class PhcFxWoocommerce {
                     $this->writeFileLog('addInternalDocumentInvoice9', $response['messages'][0]['messageCodeLocale']);                    
                   } else {
                     //If find ref, update stock
-                    foreach ($sku as $key => $value) {
-                      if($_SESSION['voProducts']['fis'][$i]['ref'] == $value){
-                        update_post_meta($productID[$value],'_stock',$response['result'][0]['stock']);
-                      }
+                    if(is_array($sku)){
+						foreach ($sku as $key => $value) {
+							if($_SESSION['voProducts']['fis'][$i]['ref'] == $value){
+								update_post_meta($productID[$value],'_stock',$response['result'][0]['stock']);
+							}
+						}
                     }
                   }    
                 }
@@ -3124,6 +3134,7 @@ class PhcFxWoocommerce {
               $response['result'][0]['email'] = $billing_email;
               $response['result'][0]['morada'] = $billing_address_1;
               $response['result'][0]['local'] = $billing_city;
+			  $response['result'][0]['provincia'] = $billing_city;
               $response['result'][0]['telefone'] = $billing_phone;
               $response['result'][0]['codpost'] = $billing_postcode;
             } else { //Used in backend
@@ -3131,6 +3142,7 @@ class PhcFxWoocommerce {
               $response['result'][0]['email'] = $billing_email_;
               $response['result'][0]['morada'] = $billing_address_1_;
               $response['result'][0]['local'] = $billing_city_;
+			  $response['result'][0]['provincia'] = $billing_city_;
               $response['result'][0]['telefone'] = $billing_phone_;
               $response['result'][0]['codpost'] = $billing_postcode_;
             }
@@ -3206,6 +3218,7 @@ class PhcFxWoocommerce {
                 $response['result'][0]['email'] = $billing_email;
                 $response['result'][0]['morada'] = $billing_address_1;
                 $response['result'][0]['local'] = $billing_city;
+				$response['result'][0]['provincia'] = $billing_city;
                 $response['result'][0]['telefone'] = $billing_phone;
                 $response['result'][0]['codpost'] = $billing_postcode;
               } else { //Used in backend
@@ -3213,6 +3226,7 @@ class PhcFxWoocommerce {
                 $response['result'][0]['email'] = $billing_email_;
                 $response['result'][0]['morada'] = $billing_address_1_;
                 $response['result'][0]['local'] = $billing_city_;
+				$response['result'][0]['provincia'] = $billing_city_;
                 $response['result'][0]['telefone'] = $billing_phone_;
                 $response['result'][0]['codpost'] = $billing_postcode_;
               }
@@ -3446,6 +3460,7 @@ class PhcFxWoocommerce {
               $response['result'][0]['nome'] = $_billing_first_name . " " . $_billing_last_name;
               $response['result'][0]['morada'] = $_billing_address_1;
               $response['result'][0]['local'] = $_billing_city;
+			  $response['result'][0]['provincia'] = $_billing_city;
               $response['result'][0]['codpost'] = $_billing_postcode;
               $response['result'][0]['telefone'] = $_billing_phone;
               $response['result'][0]['moradato'] = $_shipping_address_1;
@@ -3490,7 +3505,7 @@ class PhcFxWoocommerce {
               curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
               $response = curl_exec($ch);
               // send response as JSON
-              $response = json_decode($response, true);             
+              $response = json_decode($response, true);         
 
               if (curl_error($ch)) {
                 $this->writeFileLog('addSimpleFT13', $ch);
