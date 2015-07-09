@@ -18,7 +18,7 @@
 
 <!-- Buttons to "show list, save products, update stocks and update all fields" -->
 <div id="loader2"></div>
-<div id="saveProductInShop" class="button button-primary" title="List all products from PHC FX">
+<div id="saveProductInShop" class="button button-primary" title="Import new products from PHC FX">
 	<img id="plus" src="<?php echo plugins_url('/../images/plus.png', __FILE__) ?>" title="Save selected product in yout online store"> Import New Products
 </div>
 
@@ -26,6 +26,6 @@
 	<img id="plus" src="<?php echo plugins_url('/../images/update.png', __FILE__) ?>" title="Save selected product in yout online store"> Update Stocks
 </div>
 
-<div id="updateAllFields" class="button button-primary" title="List all products from PHC FX">
+<div id="updateAllFields" class="button button-primary" title="Update all fields of products from PHC FX">
 	<img id="plus" src="<?php echo plugins_url('/../images/update.png', __FILE__) ?>" title="Update all fields of products in your online store"> Update all fields
 </div>

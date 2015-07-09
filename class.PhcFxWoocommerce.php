@@ -23,7 +23,7 @@ class PhcFxWoocommerce {
       'typeOfOrder'       => array('label' => 'Type of Order',                              'type' => 'select',        'required' => false, 'checkboxDescription' => 'Choose the type of order', 'notice' => ''),
       'statusOfOrder'     => array('label' => 'Field to save status of order in PHC FX',    'type' => 'select',        'required' => false, 'checkboxDescription' => 'Choose field in database of PHC FX that you want to save order status', 'notice' => ''),
       'saveStatusOrder'   => array('label' => 'Save field status',                          'type' => 'text',          'required' => false, 'descr' => 'This field is used to show in PHC FX the status of order.', 'notice' => ''),
-      'manageStock'       => array('label' => 'Manage Stock',                               'type' => 'checkbox',      'required' => false, 'checkboxDescription' => 'Possibility to manage stock at your online shop', 'notice' => ''),
+      'manageStock'       => array('label' => 'Manage Stock',                               'type' => 'checkbox',      'required' => false, 'checkboxDescription' => 'Manage stock at your online shop', 'notice' => ''),
       'productPriceColumn'=> array('label' => 'Field to obtain product price in PHC FX',    'type' => 'select',        'required' => false, 'checkboxDescription' => 'Choose field in database of PHC FX that you want to obtain product price', 'notice' => ''),
       'warehouse'         => array('label' => 'Warehouse',                                  'type' => 'select',        'required' => false, 'checkboxDescription' => 'Choose from warehouse do you want import products', 'notice' => '')
       )

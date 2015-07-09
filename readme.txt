@@ -49,7 +49,7 @@ Import/Update products from PHC FX software
 You need to have PHC FX v15.2 or higher on your installation.
 
 = If I have errors in plugin, where are showed? =
-You can see erros in `/wp-content/plugins/phcfx-woocommerce/logsErrors/` and if you have configured email in woocommerce, you can receive errors from email
+You can see erros in `/wp-content/plugins/phcfx-woocommerce/logsErrors/`.
 
 = No clients / internal documents / invoices are being stored in my PHC FX database that i want? =
 Possibly you don't choose a specific database in your PHC FX backend. If this is the case, the database used is the first catched. So please write the name of database that you want.
@@ -63,7 +63,7 @@ Yes. Don't choose a type of order and invoices are generated without an internal
 = Can i choose some price from my database? =
 Yes. Just choose wich field do you want in backend settings.
 
-= When i choose type of order and save. Is showed two new fields. This is for what? =
+= When i choose type of order, is showed two new fields. This is for what? =
 This fields allows you choose where do you want order status in your PHC FX. If you leave "save field status" empty, you can't able to see order status in your PHC FX.
 
 = When i import products what means "image of right" =
@@ -72,9 +72,9 @@ Through the checkbox to update products is possible update name of products / pr
 
 == Screenshots ==
 
-1. First image legend
-2. Second image legend
-3. Third image legend
+1. List of All Products
+2. Initialize plugin and login
+3. Configurations of plugin
 
  == Changelog ==
 
