@@ -2847,56 +2847,55 @@ class PhcFxWoocommerce {
             }
           } else {
             //Manage stock
-            if($settings['backend']['manageStock'] == 'on'){
-              $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
-              $order_received = get_option('woocommerce_checkout_order_received_endpoint');
+              if($settings['backend']['manageStock'] == 'on'){
+                $post_ID = sanitize_text_field( $_REQUEST['post_ID'] );
+                $order_received = get_option('woocommerce_checkout_order_received_endpoint');
 
-              if(empty($order_received)){
-                $order = new WC_Order( $post_ID );
-              } else {
-                $order = new WC_Order( $order_received );
-              }
-
-              $i = 0;
-              foreach($order->get_items() as $key => $value){
-                $productReference = wc_get_product( $value['item_meta']['_product_id'][0] );
-                $sku[$i] = $productReference->get_sku();
-
-                $productID[$sku[$i]] = $value['item_meta']['_product_id'][0];
-              }
-
-              $i = 0;
-              $count = count($_SESSION['voProducts']['fis']);
-              while ($i < $count) {
-                foreach ($_SESSION['voProducts']['fis'][$i] as $key => $value){
-                  //Obtain product from reference
-                  $this->paramsQuery('StWS', 'ref', $_SESSION['voProducts']['fis'][$i]['ref']);
-                  curl_setopt($ch, CURLOPT_URL, $this->url);
-                  curl_setopt($ch, CURLOPT_POST, false);
-                  curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
-                  $response = curl_exec($ch);
-                  // send response as JSON
-                  $response = json_decode($response, true);
-
-                  if (curl_error($ch)) {
-                    $this->writeFileLog('addInternalDocumentInvoice9', $ch);
-                  } else if(empty($response)){
-                    $this->writeFileLog('addInternalDocumentInvoice9', 'EMPTY RESPONSE');                    
-                  } else if(isset($response['messages'][0]['messageCodeLocale'])){
-                    $this->writeFileLog('addInternalDocumentInvoice9', $response['messages'][0]['messageCodeLocale']);                    
-                  } else {
-                    //If find ref, update stock
-                    if(is_array($sku)){
-						foreach ($sku as $key => $value) {
-							if($_SESSION['voProducts']['fis'][$i]['ref'] == $value){
-								update_post_meta($productID[$value],'_stock',$response['result'][0]['stock']);
-							}
-						}
-                    }
-                  }    
+                if(empty($order_received)){
+                  $order = new WC_Order( $post_ID );
+                } else {
+                  $order = new WC_Order( $order_received );
                 }
-                ++$i;
-              }
+				
+                $i = 0;
+                foreach($order->get_items() as $key => $value){
+                  $productReference = wc_get_product( $value['item_meta']['_product_id'][0] );
+                  $sku[$i] = $productReference->get_sku();              
+                  $productID[$sku[$i]] = $value['item_meta']['_product_id'][0];
+                }
+
+                $i = 0;
+                $count = count($_SESSION['voProducts']['fis']);
+                while ($i < $count) {
+                  foreach ($_SESSION['voProducts']['fis'][$i] as $key => $value){
+                    //Obtain product from reference
+					$this->paramsQuery('StWS', 'ref', $_SESSION['voProducts']['fis'][$i]['ref']);
+                    curl_setopt($ch, CURLOPT_URL, $this->url);
+                    curl_setopt($ch, CURLOPT_POST, false);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $this->params);
+                    $response = curl_exec($ch);
+                    // send response as JSON
+                    $response = json_decode($response, true);
+
+                    if (curl_error($ch)) {
+                      $this->writeFileLog('addInternalDocumentInvoice5', $ch);
+                    } else if(empty($response)){
+                      $this->writeFileLog('addInternalDocumentInvoice5', 'EMPTY RESPONSE');                      
+                    } else if(isset($response['messages'][0]['messageCodeLocale'])){
+                      $this->writeFileLog('addInternalDocumentInvoice5', $response['messages'][0]['messageCodeLocale']);                      
+                    } else {
+                      //If find reference, update stock
+                      if (is_array($sku)){
+                        foreach ($sku as $key => $value) {
+                          if($_SESSION['voProducts']['fis'][$i]['ref'] == $value){
+                            update_post_meta($productID[$value],'_stock',$response['result'][0]['stock']);
+                          }
+                        }
+                      }
+                    }    
+                  }
+                  ++$i;
+                }
             }
           }
         }
@@ -4040,7 +4039,7 @@ class PhcFxWoocommerce {
     } else {  
       //Configured "All warehouses" in product settings 
       if($settings['backend']['warehouse'] == -1){
-        $this->paramsQuery2('SaWS');
+        $this->paramsQuery2('StWS');
       } else {
         $this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
       }
@@ -4064,24 +4063,26 @@ class PhcFxWoocommerce {
         //Create query of products to insert
         while ($i < $count) {
           foreach ($response['result'][$i] as $key => $value){
-            foreach ($refs as $arrayOfRef){
-              if($key == "ref" && $arrayOfRef == $value){
-                if($i > 0){
-                  $refArray .= ",";
-                }
-                $arrayRef[$value] = $response['result'][$i]['stock'];
-                
-                $refArray .= '{
-                                "comparison":0,
-                                "filterItem":"ref",
-                                "valueItem":"'.$value.'",
-                                "groupItem":9,
-                                "checkNull":false,
-                                "skipCheckType":false,
-                                "type":"Number"
-                              }';                                                              
-              } 
-            }
+            if(is_array($refs)){
+				foreach ($refs as $arrayOfRef){
+				  if($key == "ref" && $arrayOfRef == $value){
+					if($i > 0){
+					  $refArray .= ",";
+					}
+					$arrayRef[$value] = $response['result'][$i]['stock'];
+					
+					$refArray .= '{
+									"comparison":0,
+									"filterItem":"ref",
+									"valueItem":"'.$value.'",
+									"groupItem":9,
+									"checkNull":false,
+									"skipCheckType":false,
+									"type":"Number"
+								  }';                                                              
+				  } 
+				}
+			}
           }
           ++$i;
         }
@@ -4177,7 +4178,7 @@ class PhcFxWoocommerce {
     } else {  
       //Configured "All warehouses" in product settings 
       if($settings['backend']['warehouse'] == -1){
-          $this->paramsQuery2('SaWS');
+          $this->paramsQuery2('StWS');
       } else {
           $this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
       }
@@ -4202,11 +4203,11 @@ class PhcFxWoocommerce {
           foreach ($response['result'][$i] as $key => $value){
             foreach ($refs as $arrayOfRef){
               if($key == "ref" && $arrayOfRef == $value){
-                if($i > 0){
-                  $refArray .= ",";
-                }
-                $arrayRef[$value] = $tmpValueRef;
-                
+					if($i > 0){
+					  $refArray .= ",";
+					}
+					$arrayRef[$value] = $response['result'][$i]['stock'];
+					                
                 $refArray .= '{
                                 "comparison":0,
                                 "filterItem":"ref",
@@ -4216,9 +4217,7 @@ class PhcFxWoocommerce {
                                 "skipCheckType":false,
                                 "type":"Number"
                               }';                                                              
-              } else if($key == "stock") {        
-                $tmpValueRef = $value;
-              }
+              } 
             }
           }
           ++$i;
@@ -4311,7 +4310,7 @@ class PhcFxWoocommerce {
         } else {  
           //Configured "All warehouses" in product settings 
           if($settings['backend']['warehouse'] == -1){
-              $this->paramsQuery2('SaWS');
+              $this->paramsQuery2('StWS');
           } else {
               $this->paramsQuery('SaWS', "armazem", $settings['backend']['warehouse']);
           }
@@ -4337,10 +4336,10 @@ class PhcFxWoocommerce {
               foreach ($response['result'][$i] as $keyy => $valuee){
                 foreach ($refs as $arrayOfRef){
                   if($keyy == "ref" && $arrayOfRef == $valuee){
-                    if($i > 0){
-                      $refArray .= ",";
-                    }
-                    $arrayRef[$valuee] = $tmpValueRef;
+					if($i > 0){
+					  $refArray .= ",";
+					}
+					$arrayRef[$valuee] = $response['result'][$i]['stock'];
                     
                     $refArray .= '{
                                     "comparison":0,
@@ -4351,9 +4350,7 @@ class PhcFxWoocommerce {
                                     "skipCheckType":false,
                                     "type":"Number"
                                   }';                                                              
-                  } else if($keyy == "stock") {        
-                    $tmpValueRef = $valuee;
-                  }
+                  } 
                 }
               }
               ++$i;

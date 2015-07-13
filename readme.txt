@@ -34,7 +34,7 @@ Sync stocks from PHC FX to Woocommerce
 Choose which type of internal document and invoices you want.
 Import/Update products from PHC FX software
 
-##### NOTE: minimal PHC FX version: v15.2
+##### NOTE: minimal PHC FX version: v16
 
 == Installation ==
 
