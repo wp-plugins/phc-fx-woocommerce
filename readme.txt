@@ -46,7 +46,7 @@ Import/Update products from PHC FX software
 == Frequently Asked Questions ==
 
 = What version of my PHC FX instalation is required to work with this plugin? =
-You need to have PHC FX v15.2 or higher on your installation.
+You need to have PHC FX v16 or higher on your installation.
 
 = If I have errors in plugin, where are showed? =
 You can see erros in `/wp-content/plugins/phcfx-woocommerce/logsErrors/`.
