@@ -3790,29 +3790,32 @@ class PhcFxWoocommerce {
 		//echo $thumb_url;
 		$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
 		$img = file_get_contents($thumb_url);
-		file_put_contents($tmp, $img);
 		
-		preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
-		$file_array['name'] = basename($matches[0]);
-		$file_array['tmp_name'] = $tmp;
-		
-		// If error storing temporarily, unlink
-		if ( is_wp_error( $tmp ) ) {
-		  @unlink($file_array['tmp_name']);
-		  $file_array['tmp_name'] = '';
+		if($img != ''){
+			file_put_contents($tmp, $img);
+			
+			preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
+			$file_array['name'] = basename($matches[0]);
+			$file_array['tmp_name'] = $tmp;
+			
+			// If error storing temporarily, unlink
+			if ( is_wp_error( $tmp ) ) {
+			  @unlink($file_array['tmp_name']);
+			  $file_array['tmp_name'] = '';
+			}
+
+			//use media_handle_sideload to upload img:
+			$thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
+
+			// If error storing permanently, unlink
+			if ( is_wp_error($thumbid) ) {
+			  @unlink($file_array['tmp_name']);
+			}
+
+			set_post_thumbnail($new_post_id, $thumbid);
+
+			update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);
 		}
-
-		//use media_handle_sideload to upload img:
-		$thumbid = media_handle_sideload( $file_array, $new_post_id, 'gallery desc' );
-
-		// If error storing permanently, unlink
-		if ( is_wp_error($thumbid) ) {
-		  @unlink($file_array['tmp_name']);
-		}
-
-		set_post_thumbnail($new_post_id, $thumbid);
-
-		update_post_meta( $new_post_id, '_product_image_gallery', $thumbid);
 	} catch (Exception $e) {
 		$this->writeFileLog('Image Product', ' ');
 	}
@@ -4390,7 +4393,59 @@ class PhcFxWoocommerce {
                                 );
                 wp_update_post( $my_post );
                 update_post_meta( $productID, '_price', $response['result'][$key][$settings['backend']['productPriceColumn']] );
-                update_post_meta( $productID, '_regular_price', $response['result'][$key][$settings['backend']['productPriceColumn']]);            
+                update_post_meta( $productID, '_regular_price', $response['result'][$key][$settings['backend']['productPriceColumn']]);   
+
+				//Update image
+				try {
+					//Obtain url of image to save in shop
+					$thumb_url = $settings['backend']['url']."/cimagem.aspx?recstamp=".$response['result'][$key]['imagem']['recstamp'].
+															 "&oritable=".$response['result'][$key]['imagem']['oriTable'].
+															 "&uniqueid=".$response['result'][$key]['imagem']['uniqueid'].
+															 "&filename=".$response['result'][$key]['imagem']['imageName'].
+															 "&iflstamp=".$response['result'][$key]['imagem']['iflstamp'].
+                                                             "&imageExtension=jpg";
+															 
+					$thumb_url = str_replace(" ", "%20", $thumb_url);
+
+					$tmp = tempnam(sys_get_temp_dir(), "UL_IMAGE");
+					
+					$img = file_get_contents($thumb_url);
+					echo $img;
+					if($img != ''){
+						file_put_contents($tmp, $img);
+						
+						preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $thumb_url, $matches);
+						$file_array['name'] = basename($matches[0]);
+						$file_array['tmp_name'] = $tmp;
+						
+						// If error storing temporarily, unlink
+						if ( is_wp_error( $tmp ) ) {
+						  @unlink($file_array['tmp_name']);
+						  $file_array['tmp_name'] = '';
+						}
+
+						//use media_handle_sideload to upload img:
+						$thumbid = media_handle_sideload( $file_array, $productID, 'gallery desc' );
+
+						// If error storing permanently, unlink
+						if ( is_wp_error($thumbid) ) {
+						  @unlink($file_array['tmp_name']);
+						}
+
+						set_post_thumbnail($productID, $thumbid);
+
+						update_post_meta( $productID, '_product_image_gallery', $thumbid);
+					} else {
+						$existing = get_post_thumbnail_id( $productID );
+						if($existing) {
+							wp_delete_attachment($existing, true);
+						}
+						//delete_post_thumbnail( $productID );
+					}
+				} catch (Exception $e) {
+					$this->writeFileLog('Image Product', ' ');
+				}
+	
               }
             }
           }  
