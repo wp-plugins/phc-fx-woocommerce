@@ -2,7 +2,7 @@
 Contributors: phcwordpress
 Tags: phc, phcfx, fx, invoices, client, internal document, products, plugin, business
 Requires at least: 4.1.1
-Tested up to: 4.2.2
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv2 or later
 
